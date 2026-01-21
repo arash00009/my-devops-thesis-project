@@ -15,3 +15,14 @@ spec:
   targetNamespace: default
   timeout: 3m0s
   wait: true
+  patches:
+    - target:
+        kind: HorizontalPodAutoscaler
+        name: podinfo
+      patch: |
+        - op: replace
+          path: /spec/minReplicas
+          value: 3
+        - op: replace
+          path: /spec/maxReplicas
+          value: 10

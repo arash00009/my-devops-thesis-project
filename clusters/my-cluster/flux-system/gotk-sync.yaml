@@ -11,7 +11,7 @@ spec:
     branch: main
   secretRef:
     name: flux-system
-  url: ssh://git@github.com/arash00009/fleet-infra
+  url: ssh://git@github.com/arash00009/devops-fluxcd
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
