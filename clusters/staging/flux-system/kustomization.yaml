@@ -5,3 +5,7 @@ resources:
   - gotk-sync.yaml
   - ../podinfo-source.yaml
   - ../podinfo-kustomization.yaml
+  - gotk-components.yaml
+  - gotk-sync.yaml
+  - ../nginx/deployment.yaml
+  - ../nginx/service.yaml
