@@ -9,3 +9,4 @@ resources:
   - gotk-sync.yaml
   - ../nginx/deployment.yaml
   - ../nginx/service.yaml
+  - ../nginx/ingress.yam
