@@ -15,6 +15,7 @@ spec:
   targetNamespace: default
   timeout: 3m0s
   wait: true
+  # Patches ska ligga indenterat under spec:
   patches:
     - patch: |-
         apiVersion: autoscaling/v2
