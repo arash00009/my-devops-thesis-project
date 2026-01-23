@@ -3,6 +3,7 @@ kind: Kustomization
 commonLabels:
   environment: staging
 resources:
+  - nginx-namespace.yaml
   - nginx-test.yaml
   - podinfo-kustomization.yaml
   - podinfo-source.yaml
