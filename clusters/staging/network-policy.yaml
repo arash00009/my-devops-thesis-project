@@ -60,6 +60,7 @@ metadata:
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
+  ingressClassName: traefik # <--- VIKTIGT: Lägg till denna rad!
   rules:
   - http:
       paths:
