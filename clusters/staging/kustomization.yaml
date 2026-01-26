@@ -8,3 +8,4 @@ resources:
   - nginx-test.yaml
   - podinfo-kustomization.yaml
   - podinfo-source.yaml
+  - RBAC.yaml
