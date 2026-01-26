@@ -1,18 +1,3 @@
-# ------------------------------------------------------------------------------
-# RBAC Konfiguration för Namespace: nginx
-# Beskrivning: Definierar identitet och rättigheter för administratörer
-# av nginx-applikationen enligt principen om minsta privilegium.
-# ------------------------------------------------------------------------------
-
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: nginx-manager-sa
-  namespace: nginx
-  labels:
-    app.kubernetes.io/managed-by: flux
-    app.kubernetes.io/part-of: devops-fluxcd
-
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -21,41 +6,19 @@ metadata:
   namespace: nginx
   labels:
     app.kubernetes.io/managed-by: flux
-spec:
-  rules:
-    # Basresurser: Hantera livscykeln för applikationen
-    - apiGroups: [""]
-      resources: ["pods", "services", "configmaps", "secrets", "endpoints"]
-      verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+rules:  # <--- INGEN 'spec:' här, rules ligger direkt på rot-nivå!
+  - apiGroups: [""]
+    resources: ["pods", "services", "configmaps", "secrets", "endpoints"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 
-    # Arbetsbelastningar (Workloads): Hantera Deployment och skalning
-    - apiGroups: ["apps"]
-      resources: ["deployments", "daemonsets", "replicasets", "statefulsets"]
-      verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "daemonsets", "replicasets", "statefulsets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 
-    # Nätverk: Hantera Ingress och nätverkspolicies (viktigt för din setup!)
-    - apiGroups: ["networking.k8s.io"]
-      resources: ["ingresses", "networkpolicies"]
-      verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses", "networkpolicies"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 
-    # Felsökning: Möjlighet att läsa loggar och porta-forward
-    - apiGroups: [""]
-      resources: ["pods/log", "pods/portforward", "pods/exec"]
-      verbs: ["get", "list", "create"]
-
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: nginx-manager-binding
-  namespace: nginx
-spec:
-  # Kopplar ServiceAccount till den specifika Rollen
-  subjects:
-  - kind: ServiceAccount
-    name: nginx-manager-sa
-    namespace: nginx
-  roleRef:
-    kind: Role
-    name: nginx-full-access-role
-    apiGroup: rbac.authorization.k8s.io
+  - apiGroups: [""]
+    resources: ["pods/log", "pods/portforward", "pods/exec"]
+    verbs: ["get", "list", "create"]
