@@ -1,3 +1,4 @@
+
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -5,7 +6,7 @@ metadata:
   name: default-deny-all-ingress
   namespace: nginx
 spec:
-  podSelector: {}  
+  podSelector: {}
   policyTypes:
   - Ingress
   - Egress
@@ -27,7 +28,8 @@ spec:
           kubernetes.io/metadata.name: traefik
     ports:
     - protocol: TCP
-      port: 80 
+      port: 80
+
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -38,7 +40,6 @@ spec:
   podSelector: {}
   policyTypes:
   - Egress
-  ingress: []
   egress:
   - to:
     - namespaceSelector:
@@ -50,7 +51,7 @@ spec:
     - protocol: TCP
       port: 53
 
---- 
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
