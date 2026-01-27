@@ -20,7 +20,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: nginx 
+      app: nginx
   policyTypes:
   - Ingress
   ingress:
