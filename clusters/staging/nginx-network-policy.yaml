@@ -24,10 +24,7 @@ spec:
   - Ingress
   ingress:
   - from:
-    - namespaceSelector:
-        matchLabels:
-          # Vi använder en label vi VET finns eller som vi skapar
-          kubernetes.io/metadata.name: flux-system 
+    - namespaceSelector: {} # <--- ÄNDRA TILL DETTA: Tillåter alla namespaces på port 80
     ports:
     - protocol: TCP
       port: 80
