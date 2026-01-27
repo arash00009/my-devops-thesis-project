@@ -1,21 +1,9 @@
-i---
-# 1. Deny all ingress (Säkerhetsbas)
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: default-deny-all-ingress
-  namespace: nginx
-spec:
-  podSelector: {}
-  policyTypes:
-  - Ingress
-
 ---
-# 2. Allow Ingress från Traefik (Dörren in)
+# Denna policy isolerar Nginx helt men tillåter trafik från Traefik och låter Nginx svara.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-ingress-from-traefik
+  name: nginx-production-policy
   namespace: nginx
 spec:
   podSelector:
@@ -23,26 +11,14 @@ spec:
       app: nginx
   policyTypes:
   - Ingress
+  - Egress
   ingress:
+  # 1. Tillåt inkommande trafik på port 80 från alla namespaces (Traefik)
   - from:
-    - namespaceSelector: {} # Tillåter Traefik oavsett identitetsstrul
+    - namespaceSelector: {} 
     ports:
     - protocol: TCP
       port: 80
-
----
-# 3. Allow Egress för Svarstrafik (Lösningen på Empty Reply)
-# Utan denna kan Nginx ta emot paketet men inte skicka tillbaka webbsidan!
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: allow-egress-replies
-  namespace: nginx
-spec:
-  podSelector:
-    matchLabels:
-      app: nginx
-  policyTypes:
-  - Egress
   egress:
-  - to: [] # Tillåter podden att skicka svarstrafik utåt
+  # 2. Tillåt all utgående trafik så att Nginx kan svara på anrop och nå DNS
+  - {}
