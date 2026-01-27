@@ -1,15 +1,59 @@
 ---
+# 1. Standard: Förbjud ALLT in och ut (Default Deny)
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: nginx-allow-all-temporary
+  name: nginx-default-deny
   namespace: nginx
 spec:
-  podSelector: {} # Väljer ALLA poddar i namespacet
+  podSelector: {} # Väljer alla poddar
   policyTypes:
   - Ingress
   - Egress
+
+---
+# 2. Tillåt endast Traefik på port 80 (Kontrollerat tillträde)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: nginx-allow-ingress
+  namespace: nginx
+spec:
+  podSelector:
+    matchLabels:
+      app: nginx
+  policyTypes:
+  - Ingress
   ingress:
-  - {} # Tillåt ALLT in
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: flux-system # Endast trafik från Traefik/Flux-namespacet
+    ports:
+    - protocol: TCP
+      port: 80
+
+---
+# 3. Tillåt svarstrafik och DNS (Säker utgång)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: nginx-allow-egress
+  namespace: nginx
+spec:
+  podSelector:
+    matchLabels:
+      app: nginx
+  policyTypes:
+  - Egress
   egress:
-  - {} # Tillåt ALLT ut
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system # Tillåt DNS-uppslag
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+  - to: [] # Tillåt svarstrafik till de som anropat (Traefik)
