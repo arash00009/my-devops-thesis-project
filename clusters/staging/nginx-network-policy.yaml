@@ -1,8 +1,7 @@
----
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: nginx-global-policy
+  name: nginx-allow-traefik
   namespace: nginx
 spec:
   podSelector:
@@ -13,9 +12,9 @@ spec:
   - Egress
   ingress:
   - from:
-    - namespaceSelector: {} # Tillåt trafik från alla namespaces (Traefik)
+    - namespaceSelector: {} # Tillåt Traefik från vilket namespace som helst
     ports:
     - protocol: TCP
       port: 80
   egress:
-  - to: [] # Detta tillåter ALL Egress (viktigt för svarstrafik!)
+  - {} # Tillåt all utgående trafik (DNS + Svarstrafik)
