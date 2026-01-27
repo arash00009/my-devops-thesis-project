@@ -10,4 +10,4 @@ resources:
   - podinfo-source.yaml
   - RBAC.yaml
   - traefik-nginx.yaml
-  - traefik-release.yam
+  - traefik-release.yaml
