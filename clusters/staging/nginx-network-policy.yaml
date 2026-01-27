@@ -56,4 +56,3 @@ spec:
       port: 53
     - protocol: TCP
       port: 53
-  - to: [] # Tillåt svarstrafik till de som anropat (Traefik)
