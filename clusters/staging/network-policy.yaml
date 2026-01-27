@@ -1,4 +1,3 @@
-
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -8,8 +7,7 @@ metadata:
 spec:
   podSelector: {}
   policyTypes:
-  - Ingress
-  # Vi tar bort Egress härifrån för att inte blockera Nginx svarstrafik
+  - Ingress # Vi nekar allt IN, men låter poddarna SVARA (Egress borttagen)
 
 ---
 apiVersion: networking.k8s.io/v1
@@ -25,9 +23,7 @@ spec:
   - Ingress
   ingress:
   - from:
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: flux-system 
+    - namespaceSelector: {} # Tillåter trafik från alla namespaces (inkl. flux-system)
     ports:
     - protocol: TCP
       port: 80
