@@ -3,11 +3,9 @@ kind: Kustomization
 commonLabels:
   environment: staging
 resources:
-  - nginx-namespace.yaml
-  - network-policy.yaml
-  - nginx-test.yaml
-  - podinfo-kustomization.yaml
-  - podinfo-source.yaml
+  - namespace.yaml
+  - nginx-app.yaml        # Deployment + Service
+  - nginx-network-policy.yaml
+  - nginx-ingress.yaml
   - RBAC.yaml
-  - traefik-nginx.yaml
-  - traefik-release.yaml
+  - infrastructure-traefik.yaml  # Inkluderar HelmRepo + Release
