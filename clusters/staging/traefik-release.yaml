@@ -1,0 +1,19 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: traefik
+  namespace: flux-system
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: traefik
+      version: "*" # Hämtar senaste stabila versionen
+      sourceRef:
+        kind: HelmRepository
+        name: traefik
+        namespace: flux-system
+  values:
+    # Här kan du lägga till inställningar senare om det behövs
+    service:
+      type: LoadBalancer
