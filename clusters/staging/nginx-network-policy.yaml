@@ -34,25 +34,36 @@ spec:
       port: 80
 
 ---
-# 3. Tillåt svarstrafik och DNS (Säker utgång)
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: nginx-allow-egress
+  name: nginx-secure-enclave
   namespace: nginx
 spec:
   podSelector:
     matchLabels:
       app: nginx
   policyTypes:
+  - Ingress
   - Egress
+  ingress:
+  # TILLÅT: Trafik från Traefik (via flux-system namespace)
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: flux-system
+    ports:
+    - protocol: TCP
+      port: 80
   egress:
+  # TILLÅT: Endast DNS-trafik till kube-system (så podden kan hitta servicenamn)
   - to:
     - namespaceSelector:
         matchLabels:
-          kubernetes.io/metadata.name: kube-system # Tillåt DNS-uppslag
+          kubernetes.io/metadata.name: kube-system
     ports:
     - protocol: UDP
       port: 53
     - protocol: TCP
       port: 53
+  # NOTERA: Ingen regel för Google/Internet här = All annan Egress blockeras!
