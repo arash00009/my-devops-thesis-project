@@ -1,9 +1,8 @@
 ---
-# Denna policy isolerar Nginx helt men tillåter trafik från Traefik och låter Nginx svara.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: nginx-production-policy
+  name: nginx-global-policy
   namespace: nginx
 spec:
   podSelector:
@@ -13,12 +12,10 @@ spec:
   - Ingress
   - Egress
   ingress:
-  # 1. Tillåt inkommande trafik på port 80 från alla namespaces (Traefik)
   - from:
-    - namespaceSelector: {} 
+    - namespaceSelector: {} # Tillåt trafik från alla namespaces (Traefik)
     ports:
     - protocol: TCP
       port: 80
   egress:
-  # 2. Tillåt all utgående trafik så att Nginx kan svara på anrop och nå DNS
-  - {}
+  - to: [] # Detta tillåter ALL Egress (viktigt för svarstrafik!)
