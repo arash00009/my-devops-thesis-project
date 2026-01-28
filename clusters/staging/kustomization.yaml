@@ -9,3 +9,6 @@ resources:
   - nginx-ingress.yaml
   - RBAC.yaml
   - infrastructure-traefik.yaml  # Inkluderar HelmRepo + Release
+  - podinfo-kustomization.yaml 
+  - podinfo-source.yaml
+
