@@ -4,4 +4,4 @@ resources:
   - ns-monitoring.yaml  # Skapa namespacet först!
   - source.yaml
   - release.yaml
-  # - nginx-monitor.yaml
+  - nginx-monitor.yaml
