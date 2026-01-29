@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nginx-monitor
+  namespace: nginx # Ligger i samma namespace som appen
+  labels:
+    release: kube-prometheus-stack # Viktigt: Detta gör att Prometheus hittar denna regel
+spec:
+  selector:
+    matchLabels:
+      app: nginx # Letar efter poddar med denna label
+  namespaceSelector:
+    matchNames:
+      - nginx
+  endpoints:
+  - port: metrics # Namnet på porten vi definierade i  Deployment (9113)
+    interval: 15s
+    path: /metrics

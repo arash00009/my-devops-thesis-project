@@ -33,6 +33,15 @@ spec:
     - protocol: TCP
       port: 80
 
+# Lägg till detta under "ingress" i din befintliga NetworkPolicy
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: monitoring # Tillåt trafik från monitoring-namespacet
+    ports:
+    - protocol: TCP
+      port: 9113 # Exporterns port
+
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
