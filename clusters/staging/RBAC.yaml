@@ -11,6 +11,13 @@ metadata:
   name: nginx-full-access-role
   namespace: nginx
 rules:
+  - apiGroups:
+  - discovery.k8s.io
+  resources:
+  - endpointslices
+  verbs:
+  - list
+  - watch
   - apiGroups: [""]
     resources: ["pods", "services", "configmaps", "secrets", "endpoints"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
