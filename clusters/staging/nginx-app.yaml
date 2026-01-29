@@ -18,6 +18,14 @@ spec:
         image: nginx:latest
         ports:
         - containerPort: 80
+          name: http-web # Aktivera Nginx status
+      - name: nginx-exporter
+        image: nginx/nginx-prometheus-exporter:latest
+        args:
+          - -nginx.scrape-uri=http://localhost:80/nginx_status
+        ports:
+        - containerPort: 9113
+          name: metrics
 ---
 apiVersion: v1
 kind: Service
