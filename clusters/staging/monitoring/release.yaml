@@ -14,3 +14,9 @@ spec:
         namespace: flux-system
   install:
     createNamespace: true
+    spec:
+  values:
+    prometheus:
+      prometheusSpec:
+        serviceMonitorSelectorNilUsesHelmValues: false
+        serviceMonitorSelector: {} # Detta gör att den väljer ALLA servicemonitors
