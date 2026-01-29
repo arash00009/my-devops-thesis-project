@@ -40,6 +40,8 @@ kind: Service
 metadata:
   name: test-nginx-service
   namespace: nginx
+  labels:           # Bra att ha labels på servicen också
+    app: nginx
 spec:
   selector:
     app: nginx
@@ -47,6 +49,9 @@ spec:
     - port: 80
       targetPort: 80
       name: http
+    - port: 9113  
+      targetPort: 9113
+      name: metrics # Detta namn MÅSTE matcha 'port: metrics' i ServiceMonitor
   type: ClusterIP
 ---
 apiVersion: v1
