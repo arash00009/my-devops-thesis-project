@@ -2,21 +2,30 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: kube-prometheus-stack
-  namespace: monitoring # Vi skapar ett eget namespace för detta
+  namespace: monitoring
 spec:
   interval: 1h
   chart:
     spec:
       chart: kube-prometheus-stack
+      version: "61.7.0" # Det är bra praxis att låsa versionen
       sourceRef:
         kind: HelmRepository
         name: prometheus-community
         namespace: flux-system
   install:
     createNamespace: true
-    spec:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
   values:
     prometheus:
       prometheusSpec:
+        # Tillåt Prometheus att hitta ServiceMonitors i ALLA namespaces
         serviceMonitorSelectorNilUsesHelmValues: false
-        serviceMonitorSelector: {} # Detta gör att den väljer ALLA servicemonitors
+        serviceMonitorSelector: {}
+        serviceMonitorNamespaceSelector: {} 
+    grafana:
+      enabled: true
