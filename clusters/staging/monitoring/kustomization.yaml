@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
   - source.yaml
   - release.yaml
-  - nginx-monitor.yaml
+  # - nginx-monitor.yaml
