@@ -29,3 +29,12 @@ spec:
         serviceMonitorNamespaceSelector: {} 
     grafana:
       enabled: true
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        annotations:
+          # Denna annotation säger åt Traefik att använda din Middleware
+          traefik.ingress.kubernetes.io/router.middlewares: monitoring-grafana-auth@kubernetescrd
+        hosts:
+          - grafana.local  # Byt ut till din domän om du har en
+        path: /
