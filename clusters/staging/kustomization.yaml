@@ -12,4 +12,5 @@ resources:
   - podinfo-kustomization.yaml 
   - podinfo-source.yaml
   - monitoring/
+  - shared-auth/
 
