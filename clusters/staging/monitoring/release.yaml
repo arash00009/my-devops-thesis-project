@@ -34,7 +34,7 @@ spec:
         ingressClassName: traefik
         annotations:
           # Denna annotation säger åt Traefik att använda din Middleware
-          traefik.ingress.kubernetes.io/router.middlewares: monitoring-grafana-auth@kubernetescrd
+          traefik.ingress.kubernetes.io/router.middlewares: monitoring-grafana-auth@kubernetescrd,monitoring-grafana-headers@kubernetescrd
         hosts:
           - grafana.local  # Byt ut till din domän om du har en
         path: /
