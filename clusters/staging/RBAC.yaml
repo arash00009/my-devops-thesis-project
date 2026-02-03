@@ -37,3 +37,32 @@ roleRef:
   kind: Role
   name: nginx-full-access-role
   apiGroup: rbac.authorization.k8s.io
+
+--- 
+
+# 1. Definiera VAD Traefik får göra i monitoring-namespacet
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: traefik-secret-reader
+  namespace: monitoring # Viktigt!
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "watch"]
+
+---
+# 2. Koppla Traefiks ServiceAccount till denna Role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: traefik-read-auth-secrets
+  namespace: monitoring # Viktigt!
+subjects:
+  - kind: ServiceAccount
+    name: traefik          # Namnet på Traefiks ServiceAccount
+    namespace: flux-system # Var Traefik faktiskt bor
+roleRef:
+  kind: Role
+  name: traefik-secret-reader
+  apiGroup: rbac.authorization.k8s.io
