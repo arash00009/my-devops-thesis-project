@@ -4,4 +4,4 @@ resources:
   - ns-cert-manager.yaml
   - cert-manager-repo.yaml
   - cert-manager.yaml
-  #- cluster-issuer.yaml
+  - cluster-issuer.yaml
