@@ -35,9 +35,9 @@ spec:
         annotations:
           # 1. Här lägger vi till 'monitoring-redirect-https@kubernetescrd' först i listan
           traefik.ingress.kubernetes.io/router.middlewares: |
-            monitoring-redirect-https@kubernetescrd,
-            monitoring-grafana-auth@kubernetescrd,
-            monitoring-grafana-headers@kubernetescrd
+            redirect-https@kubernetescrd,  
+            grafana-auth@kubernetescrd,     
+            grafana-headers@kubernetescrd   
           # 2. Här kopplar vi på Cert-Manager
           cert-manager.io/cluster-issuer: "selfsigned-issuer"
         hosts:
