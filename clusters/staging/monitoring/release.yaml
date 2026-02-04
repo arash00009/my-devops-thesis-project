@@ -33,8 +33,18 @@ spec:
         enabled: true
         ingressClassName: traefik
         annotations:
-          # Denna annotation säger åt Traefik att använda din Middleware
-          traefik.ingress.kubernetes.io/router.middlewares: monitoring-grafana-auth@kubernetescrd,monitoring-grafana-headers@kubernetescrd
+          # 1. Här lägger vi till 'monitoring-redirect-https@kubernetescrd' först i listan
+          traefik.ingress.kubernetes.io/router.middlewares: |
+            monitoring-redirect-https@kubernetescrd,
+            monitoring-grafana-auth@kubernetescrd,
+            monitoring-grafana-headers@kubernetescrd
+          # 2. Här kopplar vi på Cert-Manager
+          cert-manager.io/cluster-issuer: "letsencrypt-staging"
         hosts:
-          - grafana.local  # Byt ut till din domän om du har en
+          - grafana.local
         path: /
+        # 3. Här aktiverar vi TLS (HTTPS)
+        tls:
+          - secretName: grafana-tls-cert
+            hosts:
+              - grafana.local
