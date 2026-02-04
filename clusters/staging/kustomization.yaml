@@ -11,6 +11,7 @@ resources:
   - infrastructure-traefik.yaml  # Inkluderar HelmRepo + Release
   - podinfo-kustomization.yaml 
   - podinfo-source.yaml
+  - infrastructure/
   - monitoring/
   - shared-auth/
 
