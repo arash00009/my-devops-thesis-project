@@ -5,3 +5,4 @@ resources:
   - cert-manager-repo.yaml
   - cert-manager.yaml
   - cluster-issuer.yaml
+  - middleware-redirect.yaml
