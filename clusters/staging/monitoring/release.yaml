@@ -30,14 +30,11 @@ spec:
         enabled: true
         ingressClassName: traefik
         annotations:
-          # Här lägger vi till både Auth och HTTPS-tvingaren
           traefik.ingress.kubernetes.io/router.middlewares: monitoring-grafana-auth@kubernetescrd,monitoring-redirect-https@kubernetescrd
           cert-manager.io/cluster-issuer: "selfsigned-issuer"
-        hosts:
-          - 194.103.192.81
+        hosts: [] # Fortsätt ha denna tom för IP-support
         path: /
         pathType: Prefix
         tls:
           - secretName: grafana-tls-cert
-            hosts:
-              - 194.103.192.81
+            hosts: [] # <--- Ändra till tom lista här också om det var en IP där innan
