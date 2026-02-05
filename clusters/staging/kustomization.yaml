@@ -6,6 +6,6 @@ resources:
   - namespace.yaml
   - nginx-app.yaml
   - nginx-network-policy.yaml
-  - nginx-ingress.yaml
+  # nginx-ingress.yaml
   - infrastructure-traefik.yaml
   - monitoring/      # Detta räcker, Flux hittar allt i mappen
