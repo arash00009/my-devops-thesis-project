@@ -40,7 +40,7 @@ spec:
           # 2. Här kopplar vi på Cert-Manager
           cert-manager.io/cluster-issuer: "selfsigned-issuer"
         hosts:
-          - grafana.local
+          - 194.103.192.81
         path: /
         # 3. Här aktiverar vi TLS (HTTPS)
         tls:
