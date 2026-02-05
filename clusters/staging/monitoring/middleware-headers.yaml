@@ -1,9 +1,0 @@
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: grafana-headers
-  namespace: monitoring
-spec:
-  headers:
-    customResponseHeaders:
-      X-Validated-By: "Traefik-Gateway"

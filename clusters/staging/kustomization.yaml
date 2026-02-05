@@ -4,14 +4,8 @@ commonLabels:
   environment: staging
 resources:
   - namespace.yaml
-  - nginx-app.yaml        # Deployment + Service
+  - nginx-app.yaml
   - nginx-network-policy.yaml
   - nginx-ingress.yaml
-  - RBAC.yaml
-  - infrastructure-traefik.yaml  # Inkluderar HelmRepo + Release
-  - podinfo-kustomization.yaml 
-  - podinfo-source.yaml
-  - infrastructure/
-  - monitoring/
-  - shared-auth/
-
+  - infrastructure-traefik.yaml
+  - monitoring/      # Detta räcker, Flux hittar allt i mappen
