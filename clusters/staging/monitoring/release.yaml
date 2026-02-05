@@ -46,4 +46,4 @@ spec:
         tls:
           - secretName: grafana-tls-cert
             hosts:
-              - grafana.local
+              - 194.103.192.81
