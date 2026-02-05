@@ -31,7 +31,6 @@ spec:
         ingressClassName: traefik
         annotations:
           traefik.ingress.kubernetes.io/router.middlewares: monitoring-grafana-auth@kubernetescrd
-        hosts:
-          - 194.103.192.81
+        hosts: []        
         path: /
         pathType: Prefix
