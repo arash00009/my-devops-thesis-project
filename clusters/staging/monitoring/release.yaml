@@ -31,6 +31,11 @@ spec:
         ingressClassName: traefik
         annotations:
           traefik.ingress.kubernetes.io/router.middlewares: monitoring-grafana-auth@kubernetescrd
-        hosts: []        
+          cert-manager.io/cluster-issuer: "selfsigned-issuer" # Kopplar till issuern ovan
+        hosts: [] 
         path: /
         pathType: Prefix
+        tls:
+          - secretName: grafana-tls-cert # Flux skapar denna automatiskt nu!
+            hosts:
+              - 194.103.192.81
