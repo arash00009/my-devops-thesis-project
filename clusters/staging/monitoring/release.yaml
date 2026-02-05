@@ -30,12 +30,14 @@ spec:
         enabled: true
         ingressClassName: traefik
         annotations:
-          traefik.ingress.kubernetes.io/router.middlewares: monitoring-grafana-auth@kubernetescrd
-          cert-manager.io/cluster-issuer: "selfsigned-issuer" # Kopplar till issuern ovan
-        hosts: [] 
+          # Här lägger vi till både Auth och HTTPS-tvingaren
+          traefik.ingress.kubernetes.io/router.middlewares: monitoring-grafana-auth@kubernetescrd,monitoring-redirect-https@kubernetescrd
+          cert-manager.io/cluster-issuer: "selfsigned-issuer"
+        hosts:
+          - 194.103.192.81
         path: /
         pathType: Prefix
         tls:
-          - secretName: grafana-tls-cert # Flux skapar denna automatiskt nu!
+          - secretName: grafana-tls-cert
             hosts:
               - 194.103.192.81
