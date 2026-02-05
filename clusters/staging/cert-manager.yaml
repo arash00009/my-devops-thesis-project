@@ -22,6 +22,6 @@ spec:
         name: jetstack
   interval: 1h
   install:
-    crds: CreateReplace # Detta är superviktigt för att fixa felet vi hade innan!
+    crds: CreateReplace
   values:
     installCRDs: true
