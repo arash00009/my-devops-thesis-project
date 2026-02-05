@@ -5,6 +5,7 @@ commonLabels:
 resources:
   - namespace.yaml
   - nginx-app.yaml
+  - cert-manager.yaml
   - nginx-network-policy.yaml
   # nginx-ingress.yaml
   - infrastructure-traefik.yaml
