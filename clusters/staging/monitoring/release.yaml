@@ -30,7 +30,7 @@ spec:
     grafana:
       enabled: true
       ingress:
-        enabled: true
+        enabled: false
         ingressClassName: traefik
         annotations:
           # 1. Här lägger vi till 'monitoring-redirect-https@kubernetescrd' först i listan
