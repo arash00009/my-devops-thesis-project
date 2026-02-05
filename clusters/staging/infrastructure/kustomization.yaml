@@ -5,4 +5,4 @@ resources:
   - cert-manager-repo.yaml
   - cert-manager.yaml
   - self-signed-issuer.yaml
-  #- cluster-issuer.yaml
+  - cluster-issuer.yaml
