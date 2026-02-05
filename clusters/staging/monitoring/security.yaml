@@ -12,7 +12,9 @@ metadata:
   namespace: monitoring
 spec:
   secretName: grafana-tls-cert
+  commonName: 194.103.192.81  
   dnsNames:
+    - 194.103.192.81
     - grafana.local
   issuerRef:
     name: selfsigned-issuer
