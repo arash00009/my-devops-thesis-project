@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - ns-monitoring.yaml  # Skapa namespacet först!
   - source.yaml
+  - grafana-network-policy.yaml
   - release.yaml
   - security.yaml
   - nginx-monitor.yaml
