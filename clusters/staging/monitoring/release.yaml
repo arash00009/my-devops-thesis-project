@@ -34,8 +34,7 @@ spec:
         ingressClassName: traefik
         annotations:
           # 1. Här lägger vi till 'monitoring-redirect-https@kubernetescrd' först i listan
-          traefik.ingress.kubernetes.io/router.middlewares: "monitoring-redirect-https@kubernetescrd,monitoring-grafana-auth@kubernetescrd"
-            redirect-https@kubernetescrd,  
+          traefik.ingress.kubernetes.io/router.middlewares: |
             grafana-auth@kubernetescrd,     
             grafana-headers@kubernetescrd   
           # 2. Här kopplar vi på Cert-Manager
