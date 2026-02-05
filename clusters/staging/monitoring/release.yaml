@@ -5,6 +5,7 @@ metadata:
   namespace: monitoring
 spec:
   interval: 1h
+  timeout: 15m
   chart:
     spec:
       chart: kube-prometheus-stack
@@ -14,12 +15,9 @@ spec:
         name: prometheus-community
         namespace: flux-system
   install:
-    createNamespace: true
+    crds: CreateReplace
     remediation:
-      retries: 3
-  upgrade:
-    remediation:
-      retries: 3
+      retries: 5
   values:
     prometheus:
       prometheusSpec:
@@ -33,14 +31,7 @@ spec:
         ingressClassName: traefik
         annotations:
           traefik.ingress.kubernetes.io/router.middlewares: monitoring-grafana-auth@kubernetescrd
-          cert-manager.io/cluster-issuer: "selfsigned-issuer"
         hosts:
           - 194.103.192.81
         path: /
-        tls:
-          - secretName: grafana-tls-cert
-            hosts:
-              - 194.103.192.81
-release.yaml [unix] (20:56 05/02/2026)                                                                                                43,1 Bot
--- INSERT --
-
+        pathType: Prefix
