@@ -51,7 +51,7 @@ spec:
       # Berättar för Grafana att den bor på /grafana
       grafana.ini:
         server:
-          root_url: "%(protocol)s://%(domain)s/grafana/"
+          root_url: "https://194.103.192.81/grafana/"
           serve_from_sub_path: true
       ingress:
         enabled: true
