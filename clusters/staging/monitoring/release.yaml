@@ -19,22 +19,45 @@ spec:
     remediation:
       retries: 5
   values:
+    # --- PROMETHEUS KONFIGURATION ---
     prometheus:
       prometheusSpec:
+        # Berättar för Prometheus att den bor på /prometheus
+        externalUrl: "https://194.103.192.81/prometheus"
+        routePrefix: /prometheus
         serviceMonitorSelectorNilUsesHelmValues: false
         serviceMonitorSelector: {}
         serviceMonitorNamespaceSelector: {}
-    grafana:
-      enabled: true
       ingress:
         enabled: true
         ingressClassName: traefik
         annotations:
           traefik.ingress.kubernetes.io/router.middlewares: monitoring-grafana-auth@kubernetescrd,monitoring-redirect-https@kubernetescrd
           cert-manager.io/cluster-issuer: "selfsigned-issuer"
-        hosts: [] # Fortsätt ha denna tom för IP-support
-        path: /
+        hosts: [] 
+        path: /prometheus
+        pathType: Prefix
+        tls:
+          - secretName: prometheus-tls-cert
+            hosts: []
+
+    # --- GRAFANA KONFIGURATION ---
+    grafana:
+      enabled: true
+      # Berättar för Grafana att den bor på /grafana
+      grafana.ini:
+        server:
+          root_url: "%(protocol)s://%(domain)s/grafana/"
+          serve_from_sub_path: true
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        annotations:
+          traefik.ingress.kubernetes.io/router.middlewares: monitoring-grafana-auth@kubernetescrd,monitoring-redirect-https@kubernetescrd
+          cert-manager.io/cluster-issuer: "selfsigned-issuer"
+        hosts: []
+        path: /grafana
         pathType: Prefix
         tls:
           - secretName: grafana-tls-cert-v2
-            hosts: [] # <--- Ändra till tom lista här också om det var en IP där innan
+            hosts: []
