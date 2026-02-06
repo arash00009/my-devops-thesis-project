@@ -44,6 +44,10 @@ spec:
     # --- GRAFANA KONFIGURATION ---
     grafana:
       enabled: true
+      admin:
+        existingSecret: "grafana-admin-credentials"
+        userKey: admin-user
+        passwordKey: admin-password
       # Berättar för Grafana att den bor på /grafana
       grafana.ini:
         server:
