@@ -43,8 +43,11 @@ spec:
 
     # --- GRAFANA KONFIGURATION ---
     grafana:
-      namespaceOverride: "grafana"
       enabled: true
+  namespaceOverride: "grafana"
+  # ...
+  service:
+    enabled: true
       admin:
         existingSecret: "grafana-admin-auth"
         userKey: admin-user
