@@ -2,8 +2,8 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: kube-prometheus-stack
-  namespace: monitoring
-spec:
+  namespace: prometheus
+spec:i
   interval: 1h
   timeout: 15m
   chart:
@@ -43,9 +43,10 @@ spec:
 
     # --- GRAFANA KONFIGURATION ---
     grafana:
+      namespaceOverride: "grafana"
       enabled: true
       admin:
-        existingSecret: "grafana-admin-credentials"
+        existingSecret: "grafana-admin-auth"
         userKey: admin-user
         passwordKey: admin-password
       # Berättar för Grafana att den bor på /grafana

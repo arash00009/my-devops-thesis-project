@@ -1,9 +1,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ns-monitoring.yaml  # Skapa namespacet först!
+  - ns-grafana.yaml      # Ny
+  - ns-prometheus.yaml   # Ny
+  - ns-monitoring.yaml   # Behåll för Middleware/Security
   - source.yaml
-  - grafana-network-policy.yaml
+  - security.yaml        # Middleware skapas här
   - release.yaml
-  - security.yaml
+  - grafana-network-policy.yaml
   - nginx-monitor.yaml
