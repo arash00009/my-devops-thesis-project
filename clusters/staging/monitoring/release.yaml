@@ -68,4 +68,5 @@ spec:
         pathType: Prefix
         tls:
           - secretName: grafana-tls-cert-v2
-            hosts: []
+            hosts: 
+              - "194.103.192.81" 
