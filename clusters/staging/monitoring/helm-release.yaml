@@ -1,13 +1,14 @@
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: my-prometheus-stack
-  namespace: monitoring # Namespacet där Prometheus ska bo
+  namespace: monitoring
 spec:
+  interval: 15m
   releaseName: my-prometheus-stack
   targetNamespace: monitoring
   storageNamespace: monitoring
-  interval: 15m
+
   chart:
     spec:
       chart: kube-prometheus-stack
@@ -16,26 +17,67 @@ spec:
         kind: HelmRepository
         name: prometheus-community
         namespace: flux-system
+
   install:
     createNamespace: true
     crds: CreateReplace
+
   upgrade:
     crds: CreateReplace
+
   values:
-    # Här lägger vi in dina anpassade inställningar (Values)
+
     prometheus:
       prometheusSpec:
-        externalUrl: "https://194.103.192.81/prometheus"
+        externalUrl: "https://monitoring.example.com/prometheus"
         routePrefix: /prometheus
-    
+        retention: 15d
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: standard
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 10Gi
+
     grafana:
       enabled: true
-      # Säkerhetshärdning som vi pratade om tidigare
-      securityContext:
+
+      persistence:
+        enabled: true
+        storageClassName: standard
+        accessModes:
+          - ReadWriteOnce
+        size: 5Gi
+
+      podSecurityContext:
+        runAsNonRoot: true
+        fsGroup: 472
+
+      containerSecurityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
         runAsNonRoot: true
         runAsUser: 472
-        fsGroup: 472
+
       grafana.ini:
         server:
-          root_url: "https://194.103.192.81/grafana/"
+          root_url: "https://monitoring.example.com/grafana/"
           serve_from_sub_path: true
+
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        annotations:
+          traefik.ingress.kubernetes.io/router.entrypoints: websecure
+          traefik.ingress.kubernetes.io/router.tls: "true"
+        hosts:
+          - monitoring.example.com
+        paths:
+          - /grafana
+        tls:
+          - secretName: monitoring-tls
+            hosts:
+              - monitoring.example.com
+
