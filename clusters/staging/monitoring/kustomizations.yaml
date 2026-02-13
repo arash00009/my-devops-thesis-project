@@ -1,5 +1,0 @@
-resources:
-  - ns-monitoring.yaml
-  - helmrepository.yaml
-  - prometheus-release.yaml
-

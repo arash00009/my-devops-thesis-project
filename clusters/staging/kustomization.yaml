@@ -3,10 +3,10 @@ kind: Kustomization
 commonLabels:
   environment: staging
 resources:
-  - ns-nginx.yaml 
+  - ns-nginx.yaml
   - nginx-app.yaml
   - cert-manager.yaml
   - nginx-network-policy.yaml
   # nginx-ingress.yaml
   - infrastructure-traefik.yaml
-  - monitoring/      # Detta räcker, Flux hittar allt i mappen
+  
