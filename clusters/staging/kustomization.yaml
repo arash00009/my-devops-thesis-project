@@ -9,4 +9,6 @@ resources:
   - nginx-network-policy.yaml
   # nginx-ingress.yaml
   - infrastructure-traefik.yaml
+  - ./monitoring
+
   
