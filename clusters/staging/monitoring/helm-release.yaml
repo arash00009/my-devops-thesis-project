@@ -4,7 +4,9 @@ metadata:
   name: my-prometheus-stack
   namespace: monitoring
 spec:
-  interval: 15m
+  interval: 10m
+  timeout: 10m
+
   releaseName: my-prometheus-stack
   targetNamespace: monitoring
   storageNamespace: monitoring
@@ -24,32 +26,50 @@ spec:
 
   upgrade:
     crds: CreateReplace
+    cleanupOnFail: true
 
   values:
 
+    # =========================
+    # PROMETHEUS
+    # =========================
     prometheus:
       prometheusSpec:
+        retention: 2d
         externalUrl: "https://monitoring.example.com/prometheus"
         routePrefix: /prometheus
-        retention: 15d
+
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+
         storageSpec:
           volumeClaimTemplate:
             spec:
-              storageClassName: standard
               accessModes: ["ReadWriteOnce"]
               resources:
                 requests:
-                  storage: 10Gi
+                  storage: 5Gi
 
+    # =========================
+    # GRAFANA
+    # =========================
     grafana:
       enabled: true
 
-      persistence:
-        enabled: true
-        storageClassName: standard
-        accessModes:
-          - ReadWriteOnce
-        size: 5Gi
+      adminPassword: "ChangeMeNow123!"
+
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
 
       podSecurityContext:
         runAsNonRoot: true
@@ -57,7 +77,7 @@ spec:
 
       containerSecurityContext:
         allowPrivilegeEscalation: false
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
         runAsNonRoot: true
         runAsUser: 472
 
@@ -80,4 +100,19 @@ spec:
           - secretName: monitoring-tls
             hosts:
               - monitoring.example.com
+
+    # =========================
+    # Disable heavy components
+    # =========================
+    alertmanager:
+      enabled: false
+
+    kubeEtcd:
+      enabled: false
+
+    kubeScheduler:
+      enabled: false
+
+    kubeControllerManager:
+      enabled: false
 
