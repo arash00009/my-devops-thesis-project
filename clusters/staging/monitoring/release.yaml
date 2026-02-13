@@ -41,21 +41,22 @@ spec:
           - secretName: prometheus-tls-cert
             hosts: []
 
-# --- GRAFANA KONFIGURATION ---
+    # --- GRAFANA KONFIGURATION ---
     grafana:
       enabled: true
-      namespaceOverride: "grafana"
+  namespaceOverride: "grafana"
+  # ...
+  service:
+    enabled: true
       admin:
         existingSecret: "grafana-admin-auth"
         userKey: admin-user
         passwordKey: admin-password
-
       # Berättar för Grafana att den bor på /grafana
       grafana.ini:
         server:
           root_url: "https://194.103.192.81/grafana/"
           serve_from_sub_path: true
-      
       ingress:
         enabled: true
         ingressClassName: traefik
@@ -67,4 +68,5 @@ spec:
         pathType: Prefix
         tls:
           - secretName: grafana-tls-cert-v2
-            hosts: []
+            hosts: 
+              - "194.103.192.81" 
