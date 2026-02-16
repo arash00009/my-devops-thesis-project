@@ -6,5 +6,6 @@ resources:
   - cert-issuer.yaml
   - network-policy.yaml
   - servicemonitor.yaml
+  - storage/
   - helmreleases/
   - auth-middleware/
