@@ -1,4 +1,3 @@
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -6,21 +5,21 @@ metadata:
   namespace: monitoring
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    traefik.ingress.kubernetes.io/router.middlewares: "monitoring-basic-auth@kubernetescrd"
+    traefik.ingress.kubernetes.io/router.middlewares: "monitoring-basic-auth@kubernetescrd,monitoring-ratelimit@kubernetescrd"
 spec:
   ingressClassName: traefik
   tls:
     - hosts:
-        - grafana.your-domain.com  # ÄNDRA TILL DIN DOMÄN
+        - grafana.example.com  # ← ÄNDRA DIN DOMÄN
       secretName: grafana-tls
   rules:
-    - host: grafana.your-domain.com  # ÄNDRA TILL DIN DOMÄN
+    - host: grafana.example.com  # ← ÄNDRA DIN DOMÄN
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: prometheus-grafana
+                name: my-prometheus-stack-grafana
                 port:
                   number: 80

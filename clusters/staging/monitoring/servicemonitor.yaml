@@ -1,12 +1,12 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: ubuntu-local
+  name: windows-exporter
   namespace: monitoring
 spec:
   selector:
     matchLabels:
-      app: ubuntu-local
+      app: windows-exporter
   endpoints:
     - port: metrics
       interval: 30s
@@ -14,14 +14,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ubuntu-local
+  name: windows-exporter
   namespace: monitoring
   labels:
-    app: ubuntu-local
+    app: windows-exporter
 spec:
   type: ExternalName
-  externalName: 195.178.173.110
+  externalName: windows-exporter.example.local  # ← ÄNDRA TILL DIN HOST
   ports:
     - name: metrics
-      port: 9100
-      targetPort: 9100
+      port: 9182
+      targetPort: 9182

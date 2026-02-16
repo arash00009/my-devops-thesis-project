@@ -5,7 +5,10 @@ resources:
   - rbac.yaml
   - cert-issuer.yaml
   - network-policy.yaml
+  - secrets/              # ← SECRETS FÖRST
+  - storage/             # ← STORAGE ANDRA
+  - helmreleases/        # ← HELMRELEASES TREDJE
+  - prometheus/          # ← HELM CHART
   - servicemonitor.yaml
-  - storage/
-  - helmreleases/
   - auth-middleware/
+  - ingress/

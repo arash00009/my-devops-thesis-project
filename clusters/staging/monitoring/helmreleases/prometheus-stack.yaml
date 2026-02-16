@@ -1,4 +1,3 @@
-cat > prometheus-stack.yaml << 'EOF'
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -6,13 +5,6 @@ metadata:
   namespace: monitoring
 spec:
   interval: 10m
-  
-  # Dependency: storage-class måste vara ready först
-  dependsOn:
-    - name: local-storage
-      namespace: monitoring
-  
-  # Officiell kube-prometheus-stack från prometheus-community
   chart:
     spec:
       chart: kube-prometheus-stack
@@ -21,42 +13,38 @@ spec:
         kind: HelmRepository
         name: prometheus-community
         namespace: flux-system
-  
   targetNamespace: monitoring
-  
-  # Install/Upgrade strategi
   install:
     crds: Create
     remediation:
       retries: 3
-  
   upgrade:
     crds: CreateReplace
     remediation:
       retries: 3
-  
-  # Values från officiella chartet + dina custom värden
+  postRenderers:
+    - kustomize:
+        patchesJson6902:
+          - target:
+              group: apps
+              version: v1
+              kind: Deployment
+              name: my-prometheus-stack-grafana
+            patch:
+              - op: add
+                path: /spec/template/spec/containers/0/env
+                value:
+                  - name: GF_SECURITY_ADMIN_PASSWORD
+                    valueFrom:
+                      secretKeyRef:
+                        name: grafana-admin
+                        key: admin-password
   values:
-    # Prometheus config
     prometheus:
       prometheusSpec:
         retention: 30d
         scrapeInterval: 30s
         evaluationInterval: 30s
-        
-        # Storage med local-storage StorageClass
-        storageSpec:
-          volumeClaimTemplate:
-            spec:
-              storageClassName: local-storage
-              resources:
-                requests:
-                  storage: 10Gi
-        
-        # Din custom scrape config från Helm Chart
-        additionalScrapeConfigs: []
-        
-        # Resurser
         resources:
           requests:
             cpu: 250m
@@ -64,17 +52,24 @@ spec:
           limits:
             cpu: 500m
             memory: 1Gi
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: local-storage
+              resources:
+                requests:
+                  storage: 10Gi
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
     
-    # Grafana config
     grafana:
       enabled: true
-      adminPassword: "password123"
+      adminUser: admin
+      adminPassword: "ChangeMe!Secure123$"  # Överskrivs av Secret
       persistence:
         enabled: true
         storageClassName: local-storage
         size: 5Gi
-      
-      # Datasource
       datasources:
         datasources.yaml:
           apiVersion: 1
@@ -85,7 +80,6 @@ spec:
               access: proxy
               isDefault: true
     
-    # AlertManager config
     alertmanager:
       enabled: true
       alertmanagerSpec:
@@ -97,15 +91,11 @@ spec:
                 requests:
                   storage: 1Gi
     
-    # Node Exporter
     prometheus-node-exporter:
       enabled: true
     
-    # Kube State Metrics
     kube-state-metrics:
       enabled: true
     
-    # Prometheus Operator
     prometheusOperator:
       enabled: true
-EOF

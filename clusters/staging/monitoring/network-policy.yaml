@@ -1,5 +1,5 @@
 ---
-# Blockera all inkommande trafik som standard
+# Blockera all trafik som standard
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -12,7 +12,27 @@ spec:
     - Egress
 
 ---
-# Tillåt Prometheus att scrapa metrics från noder
+# Tillåt DNS för alla pods
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns
+  namespace: monitoring
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+
+---
+# Tillåt Prometheus att scrapa metrics
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -25,59 +45,70 @@ spec:
   policyTypes:
     - Egress
   egress:
-    # Tillåt DNS
+    # DNS
     - to:
-        - podSelector:
+        - namespaceSelector:
             matchLabels:
-              k8s-app: kube-dns
+              name: kube-system
       ports:
         - protocol: UDP
           port: 53
-    
-    # Tillåt till service monitors
+    # Node exporters
     - to:
         - namespaceSelector: {}
       ports:
         - protocol: TCP
-          port: 9100  # node-exporter
+          port: 9100
         - protocol: TCP
-          port: 10250 # kubelet
-        - protocol: TCP
-          port: 10257 # kube-controller-manager
-
----
-# Tillåt inkommande trafik ENDAST från Traefik
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: allow-from-traefik
-  namespace: monitoring
-spec:
-  podSelector:
-    matchLabels:
-      app: prometheus
-  policyTypes:
-    - Ingress
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              name: traefik-system
+          port: 9182  # Windows Exporter
+    # Kubelet
+    - to:
+        - namespaceSelector: {}
       ports:
         - protocol: TCP
-          port: 9090
+          port: 10250
 
 ---
+# Tillåt Grafana att prata med Prometheus
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-grafana-ingress
+  name: grafana-allow-prometheus
   namespace: monitoring
 spec:
   podSelector:
     matchLabels:
       app.kubernetes.io/name: grafana
   policyTypes:
+    - Egress
+  egress:
+    # DNS
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+    # Prometheus
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+      ports:
+        - protocol: TCP
+          port: 9090
+
+---
+# Tillåt Ingress från Traefik
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-traefik-ingress
+  namespace: monitoring
+spec:
+  podSelector: {}
+  policyTypes:
     - Ingress
   ingress:
     - from:
@@ -86,4 +117,8 @@ spec:
               name: traefik-system
       ports:
         - protocol: TCP
-          port: 3000
+          port: 9090  # Prometheus
+        - protocol: TCP
+          port: 3000  # Grafana
+        - protocol: TCP
+          port: 9093  # Alertmanager
