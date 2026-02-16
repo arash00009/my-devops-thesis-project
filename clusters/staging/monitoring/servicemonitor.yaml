@@ -20,15 +20,8 @@ metadata:
     app: ubuntu-local
 spec:
   type: ExternalName
-  externalName: 195.178.173.110 
+  externalName: 195.178.173.110
   ports:
     - name: metrics
       port: 9100
       targetPort: 9100
-```
-
-## STEG 3: Spara filen
-```
-Ctrl+O
-Enter
-Ctrl+X
