@@ -1,3 +1,4 @@
+cat > prometheus-stack.yaml << 'EOF'
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -5,6 +6,13 @@ metadata:
   namespace: monitoring
 spec:
   interval: 10m
+  
+  # Dependency: storage-class måste vara ready först
+  dependsOn:
+    - name: local-storage
+      namespace: monitoring
+  
+  # Officiell kube-prometheus-stack från prometheus-community
   chart:
     spec:
       chart: kube-prometheus-stack
@@ -13,42 +21,30 @@ spec:
         kind: HelmRepository
         name: prometheus-community
         namespace: flux-system
+  
   targetNamespace: monitoring
+  
+  # Install/Upgrade strategi
   install:
     crds: Create
     remediation:
       retries: 3
+  
   upgrade:
     crds: CreateReplace
     remediation:
       retries: 3
+  
+  # Values från officiella chartet + dina custom värden
   values:
+    # Prometheus config
     prometheus:
       prometheusSpec:
+        retention: 30d
         scrapeInterval: 30s
         evaluationInterval: 30s
         
-        additionalScrapeConfigs: 
-          - job_name: 'windows-local'
-            scrape_interval: 30s
-            scrape_timeout: 10s
-            static_configs:
-              - targets: ['192.168.1.224:9182']  # ← Uppdatera med DIN IP
-                labels:
-                  instance: 'windows-dev'
-                  service: 'windows-exporter'
-                  environment: 'local'
-                  os: 'windows'
-        resources:
-          requests:
-            cpu: 250m
-            memory: 512Mi
-          limits:
-            cpu: 500m
-            memory: 1Gi
-        
-        retention: 30d
-        
+        # Storage med local-storage StorageClass
         storageSpec:
           volumeClaimTemplate:
             spec:
@@ -57,38 +53,59 @@ spec:
                 requests:
                   storage: 10Gi
         
-        serviceMonitorSelectorNilUsesHelmValues: false
-        podMonitorSelectorNilUsesHelmValues: false
+        # Din custom scrape config från Helm Chart
+        additionalScrapeConfigs: []
+        
+        # Resurser
+        resources:
+          requests:
+            cpu: 250m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
     
+    # Grafana config
     grafana:
       enabled: true
       adminPassword: "password123"
       persistence:
         enabled: true
+        storageClassName: local-storage
         size: 5Gi
+      
+      # Datasource
       datasources:
         datasources.yaml:
           apiVersion: 1
           datasources:
             - name: Prometheus
               type: prometheus
-              url: http://prometheus-kube-prometheus-prometheus:9090
+              url: http://my-prometheus-stack-kube-prom-prometheus:9090
               access: proxy
               isDefault: true
     
-    prometheusOperator:
+    # AlertManager config
+    alertmanager:
       enabled: true
-    
-    prometheus-node-exporter:
-      enabled: true
-    
-    kube-state-metrics:
-      enabled: true
-    
-    storage:
+      alertmanagerSpec:
+        storage:
           volumeClaimTemplate:
             spec:
               storageClassName: local-storage
               resources:
                 requests:
                   storage: 1Gi
+    
+    # Node Exporter
+    prometheus-node-exporter:
+      enabled: true
+    
+    # Kube State Metrics
+    kube-state-metrics:
+      enabled: true
+    
+    # Prometheus Operator
+    prometheusOperator:
+      enabled: true
+EOF

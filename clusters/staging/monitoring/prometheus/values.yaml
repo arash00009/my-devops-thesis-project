@@ -1,0 +1,36 @@
+
+# Custom Prometheus Values
+prometheus:
+  additionalScrapeConfigs:
+    - job_name: 'windows-local'
+      scrape_interval: 30s
+      scrape_timeout: 10s
+      static_configs:
+        - targets: ['localhost:9182']
+          labels:
+            instance: 'my-windows'
+            service: 'windows-exporter'
+            environment: 'local'
+            os: 'windows'
+
+  # Service Monitor config
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+
+  # Storage
+  storage:
+    retention: 30d
+    size: 10Gi
+    storageClassName: local-storage
+
+grafana:
+  adminPassword: "password123"
+  persistence:
+    size: 5Gi
+
+alertmanager:
+  storage:
+    size: 1Gi
+    storageClassName: local-storage
+

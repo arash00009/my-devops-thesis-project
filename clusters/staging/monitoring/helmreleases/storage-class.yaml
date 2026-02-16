@@ -1,0 +1,25 @@
+cat > storage-class.yaml << 'EOF'
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: local-storage
+  namespace: monitoring
+spec:
+  interval: 10m
+  
+  # Officiell local-path-provisioner Helm Chart
+  chart:
+    spec:
+      chart: local-path-provisioner
+      version: "0.0.24"
+      sourceRef:
+        kind: HelmRepository
+        name: rancher-latest
+        namespace: flux-system
+  
+  values:
+    storageClass:
+      name: local-storage
+      reclaimPolicy: Delete
+      volumeBindingMode: WaitForFirstConsumer
+EOF
