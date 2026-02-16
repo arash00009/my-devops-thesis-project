@@ -52,6 +52,7 @@ spec:
         storageSpec:
           volumeClaimTemplate:
             spec:
+              storageClassName: local-storage
               resources:
                 requests:
                   storage: 10Gi
@@ -84,13 +85,10 @@ spec:
     kube-state-metrics:
       enabled: true
     
-    alertmanager:
-      enabled: true
-      alertmanagerSpec:
-        storage:
+    storage:
           volumeClaimTemplate:
             spec:
+              storageClassName: local-storage
               resources:
                 requests:
                   storage: 1Gi
-
