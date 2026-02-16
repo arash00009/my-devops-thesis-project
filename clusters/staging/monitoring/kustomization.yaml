@@ -7,5 +7,4 @@ resources:
   - rbac.yaml
   - network-policy.yaml
   - prometheus/
-  - traefik-middleware/
   - servicemonitor.yaml
