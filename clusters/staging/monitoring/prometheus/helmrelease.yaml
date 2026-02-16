@@ -1,0 +1,97 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: prometheus-stack
+  namespace: monitoring
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: "66.0.0"
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: flux-system
+  targetNamespace: monitoring
+  install:
+    crds: Create
+    remediation:
+      retries: 3
+  upgrade:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+  values:
+    prometheus:
+      prometheusSpec:
+        scrapeInterval: 30s
+        evaluationInterval: 30s
+        
+        additionalScrapeConfigs: []
+          - job_name: 'ubuntu-local'
+            scrape_interval: 30s
+            scrape_timeout: 10s
+            static_configs:
+              - targets: ['172.20.102.29:9100']
+                labels:
+                  instance: 'ubuntu-dev'
+                  service: 'node-exporter'
+                  environment: 'local'
+                  os: 'linux'
+        
+        resources:
+          requests:
+            cpu: 250m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+        
+        retention: 30d
+        
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              resources:
+                requests:
+                  storage: 10Gi
+        
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
+    
+    grafana:
+      enabled: true
+      adminPassword: "password123"
+      persistence:
+        enabled: true
+        size: 5Gi
+      datasources:
+        datasources.yaml:
+          apiVersion: 1
+          datasources:
+            - name: Prometheus
+              type: prometheus
+              url: http://prometheus-kube-prometheus-prometheus:9090
+              access: proxy
+              isDefault: true
+    
+    prometheusOperator:
+      enabled: true
+    
+    prometheus-node-exporter:
+      enabled: true
+    
+    kube-state-metrics:
+      enabled: true
+    
+    alertmanager:
+      enabled: true
+      alertmanagerSpec:
+        storage:
+          volumeClaimTemplate:
+            spec:
+              resources:
+                requests:
+                  storage: 1Gi
+
