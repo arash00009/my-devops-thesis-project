@@ -20,7 +20,7 @@ metadata:
     app: ubuntu-local
 spec:
   type: ExternalName
-  externalName: 172.20.102.29
+  externalName: 195.178.173.110 
   ports:
     - name: metrics
       port: 9100

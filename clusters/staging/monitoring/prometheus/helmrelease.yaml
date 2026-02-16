@@ -28,18 +28,17 @@ spec:
         scrapeInterval: 30s
         evaluationInterval: 30s
         
-        additionalScrapeConfigs: []
-          - job_name: 'ubuntu-local'
+        additionalScrapeConfigs: 
+          - job_name: 'windows-local'
             scrape_interval: 30s
             scrape_timeout: 10s
             static_configs:
-              - targets: ['172.20.102.29:9100']
+              - targets: ['192.168.1.224:9182']  # ← Uppdatera med DIN IP
                 labels:
-                  instance: 'ubuntu-dev'
-                  service: 'node-exporter'
+                  instance: 'windows-dev'
+                  service: 'windows-exporter'
                   environment: 'local'
-                  os: 'linux'
-        
+                  os: 'windows'
         resources:
           requests:
             cpu: 250m
