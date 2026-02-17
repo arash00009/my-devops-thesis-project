@@ -4,7 +4,10 @@ metadata:
   name: kube-prometheus-stack
   namespace: monitoring
 spec:
-  interval: 10m
+  interval: 15m
+  releaseName: kube-prometheus-stack
+  targetNamespace: monitoring
+
   chart:
     spec:
       chart: kube-prometheus-stack
@@ -13,21 +16,58 @@ spec:
         kind: HelmRepository
         name: prometheus-community
         namespace: flux-system
+
   install:
-    createNamespace: true
+    createNamespace: false
     crds: CreateReplace
+
   upgrade:
     crds: CreateReplace
+
   values:
     prometheus:
       prometheusSpec:
         externalUrl: "https://monitoring.example.com/prometheus"
         routePrefix: /prometheus
         retention: 15d
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        annotations:
+          traefik.ingress.kubernetes.io/router.entrypoints: websecure
+          cert-manager.io/cluster-issuer: "selfsigned-issuer"
+        hosts:
+          - monitoring.example.com
+        path: /prometheus
+        pathType: Prefix
+        tls:
+          - secretName: prometheus-tls-cert
+            hosts:
+              - monitoring.example.com
+
     grafana:
       enabled: true
+      namespaceOverride: "monitoring"
+      admin:
+        existingSecret: "grafana-admin"  # skapa med kubectl
+        userKey: admin-user
+        passwordKey: admin-password
       grafana.ini:
         server:
           root_url: "https://monitoring.example.com/grafana/"
           serve_from_sub_path: true
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        annotations:
+          traefik.ingress.kubernetes.io/router.entrypoints: websecure
+          cert-manager.io/cluster-issuer: "selfsigned-issuer"
+        hosts:
+          - monitoring.example.com
+        path: /grafana
+        pathType: Prefix
+        tls:
+          - secretName: grafana-tls-cert
+            hosts:
+              - monitoring.example.com
 
