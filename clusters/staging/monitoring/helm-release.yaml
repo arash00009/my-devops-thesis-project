@@ -29,7 +29,7 @@ spec:
     grafana:
       enabled: true
       admin:
-        existingSecret: grafana-admin # Vi använder secret för lösenord
+        existingSecret: grafana-admin
       podSecurityContext:
         runAsNonRoot: true
         fsGroup: 472
@@ -56,4 +56,3 @@ spec:
           - secretName: monitoring-tls
             hosts:
               - monitoring.example.com
-
