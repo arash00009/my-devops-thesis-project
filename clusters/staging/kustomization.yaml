@@ -3,15 +3,15 @@ kind: Kustomization
 commonLabels:
   environment: staging
 resources:
-  - nginx-namespace.yaml
-  - monitoring-namespace.yaml
-  - nginx-helmrelease.yaml 
-  - cert-manager.yaml
-  - nginx-network-policy.yaml
-  - infrastructure-traefik.yaml
-  - nginx-ingress.yaml
-  - prometheus-middleware.yaml
-  - cluster-issuer.yaml
-  - ./monitoring
-
-  
+- nginx-namespace.yaml
+- nginx-helmrelease.yaml
+- cert-manager.yaml
+- nginx-network-policy.yaml
+- infrastructure-traefik.yaml
+- nginx-ingress.yaml
+- prometheus-middleware.yaml
+- cluster-issuer.yaml
+- podinfo-source.yaml
+- podinfo-kustomization.yaml
+- ./flux-system
+- ./monitoring/kustomization.yaml  
