@@ -2,19 +2,17 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: my-nginx
-  namespace: flux-system # Själva objektet ligger här
+  namespace: flux-system          # HelmRelease in flux-system
 spec:
-  targetNamespace: nginx   # Men appen deployas till nginx-namespacet
-  releaseName: my-nginx
-  interval: 15m
+  targetNamespace: nginx          # This app deployas to nginx namespace!
   chart:
     spec:
-      chart: ./charts/my-nginx  # VIKTIGT: Sökväg från repots rot
+      chart: ./charts/my-nginx
       sourceRef:
         kind: GitRepository
-        name: flux-system      # Refererar till ditt eget repo
-        namespace: flux-system
+        name: flux-system
   values:
     replicaCount: 3
     monitoring:
       enabled: true
+
