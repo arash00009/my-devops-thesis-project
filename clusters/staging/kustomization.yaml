@@ -3,7 +3,8 @@ kind: Kustomization
 commonLabels:
   environment: staging
 resources:
-  - ns-nginx.yaml
+  - nginx-namespace.yaml
+  - monitoring-namespace.yaml
   - nginx-helmrelease.yaml 
   - cert-manager.yaml
   - nginx-network-policy.yaml
