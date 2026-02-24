@@ -25,7 +25,7 @@ spec:
 =======
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:
-        - containerPort: 80
+        - containerPort: 8000
           name: http-web
       {{- if .Values.monitoring.enabled }} # Logik för sidecar
       - name: nginx-exporter
