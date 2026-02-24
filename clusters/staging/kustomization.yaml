@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+commonLabels:
+  environment: staging
+resources:
+  - ns-nginx.yaml
+  - nginx-helmrelease.yaml 
+  - cert-manager.yaml
+  - nginx-network-policy.yaml
+  - infrastructure-traefik.yaml
+  - nginx-ingress.yaml
+  - prometheus-middleware.yaml
+  - cluster-issuer.yaml
+  - ./monitoring
+
+  

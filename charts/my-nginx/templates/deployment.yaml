@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: nginx
+      image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+      ports:
+      - containerPort: 8000      # ← ÄNDRA från 80 till 8000!
+        name: http-web
+      command: ["/bin/sh"]
+      args: ["-c", "sed -i 's/listen 80;/listen 8000;/' /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]

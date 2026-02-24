@@ -1,0 +1,18 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: prometheus-auth
+  namespace: flux-system
+spec:
+  basicAuth:
+    secret: prometheus-basic-auth-secret
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: prometheus-basic-auth-secret
+  namespace: flux-system
+type: Opaque
+data:
+  users: YWRtaW46JGFyJDEwJEFmR0Ztc3dSTjV3bG9wT3d4eEJtR1RjV1Rydnh0S3V6R0hJWWl4VWo1OQ==  # admin:admin (base64 htpasswd)
+

@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx
+  namespace: nginx
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"  # Du behöver skapa detta
+spec:
+  rules:
+  - host: lia-kube.cloudist.solutions
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: my-nginx
+            port:
+              number: 8000
+  tls:
+  - secretName: lia-kube-tls
+    hosts:
+    - lia-kube.cloudist.solutions
+
