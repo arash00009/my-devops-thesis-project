@@ -1,10 +1,8 @@
-apps/nginx/helmrelease.yaml
-
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: nginx
-  namespace: nginx   # <-- Importent
+  namespace: nginx
 spec:
   interval: 10m
   chart:
