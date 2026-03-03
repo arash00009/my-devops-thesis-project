@@ -8,10 +8,10 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: nginx.staging.lia-kube.cloudist.solutions
+    - host: lia-kube.cloudist.solutions
       http:
         paths:
-          - path: /
+          - path: /nginx
             pathType: Prefix
             backend:
               service:
