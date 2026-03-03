@@ -8,5 +8,5 @@ spec:
   url: https://github.com/cloudist-se/devops-fluxcd
   ref:
     branch: main
-  path: ./clusters/staging
+  path: ./
 
