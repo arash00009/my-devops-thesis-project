@@ -5,6 +5,7 @@ metadata:
   namespace: nginx
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.middlewares: nginx-strip-prefix@kubernetescrd
 spec:
   ingressClassName: traefik
   rules:
