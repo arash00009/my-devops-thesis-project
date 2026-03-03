@@ -9,4 +9,4 @@ spec:
     name: letsencrypt
     kind: ClusterIssuer
   dnsNames:
-    - nginx.staging.lia-kube.cloudist.solutions
+    - lia-kube.cloudist.solutions
