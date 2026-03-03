@@ -32,4 +32,5 @@ spec:
       enabled: true
       keep: false
     extraArgs:
-      - --acme-http01-solver-nameservers=8.8.8.8:53
+      - --dns01-recursive-nameservers=8.8.8.8:53
+      - --dns01-recursive-nameservers-only
