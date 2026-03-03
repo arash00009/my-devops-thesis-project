@@ -1,0 +1,11 @@
+kind: Certificate
+metadata:
+  name: nginx-tls
+  namespace: nginx
+spec:
+  secretName: nginx-tls-secret  
+  issuerRef:
+    name: letsencrypt             # My ClusterIssuer
+    kind: ClusterIssuer
+  dnsNames:
+    - nginx.dittdomän.se
