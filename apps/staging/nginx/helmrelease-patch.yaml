@@ -11,6 +11,4 @@ spec:
     service:
       port: 80
     ingress:
-      enabled: true
-      hosts:
-      - host: nginx.staging.lia-kube.cloudist.solutions
+      enabled: false
