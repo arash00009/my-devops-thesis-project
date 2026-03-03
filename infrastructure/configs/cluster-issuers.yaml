@@ -4,7 +4,6 @@ metadata:
   name: letsencrypt
 spec:
   acme:
-    # Replace the email address with your own contact email
     email: fluxcdbot@users.noreply.github.com
     server: https://acme-staging-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
@@ -12,4 +11,8 @@ spec:
     solvers:
       - http01:
           ingress:
-            class: nginx
+            class: traefik
+            ingressTemplate:
+              metadata:
+                annotations:
+                  kubernetes.io/ingress.class: traefik
