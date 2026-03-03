@@ -5,14 +5,10 @@ metadata:
   namespace: nginx
 spec:
   interval: 10m
-  chart:
-    spec:
-      chart: nginx
-      version: "15.x"
-      sourceRef:
-        kind: HelmRepository
-        name: bitnami-nginx
-        namespace: flux-system
+  chartRef:
+    kind: OCIRepository
+    name: bitnami-nginx
+    namespace: flux-system
   values:
     replicaCount: 2
     service:
