@@ -8,4 +8,4 @@ spec:
     name: letsencrypt             # My ClusterIssuer
     kind: ClusterIssuer
   dnsNames:
-    - nginx.dittdomän.se
+    - nginx.staging.lia-kube.cloudist.solutions
