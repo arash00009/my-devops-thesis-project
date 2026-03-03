@@ -3,7 +3,7 @@ kind: Namespace
 metadata:
   name: cert-manager
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: OCIRepository
 metadata:
   name: cert-manager
