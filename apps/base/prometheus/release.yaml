@@ -1,0 +1,22 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: prometheus
+  namespace: prometheus
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: prometheus
+      version: "25.x"
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus
+        namespace: flux-system
+  values:
+    server:
+      persistentVolume:
+        enabled: true
+        size: 8Gi
+      statefulSet:
+        enabled: true

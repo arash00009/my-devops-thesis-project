@@ -1,0 +1,13 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: prometheus
+  namespace: prometheus
+spec:
+  values:
+    server:
+      persistentVolume:
+        enabled: true
+        size: 8Gi
+      statefulSet:
+        enabled: true
