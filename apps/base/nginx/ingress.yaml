@@ -4,10 +4,15 @@ metadata:
   name: nginx
   namespace: nginx
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
     traefik.ingress.kubernetes.io/router.middlewares: nginx-strip-prefix@kubernetescrd
 spec:
   ingressClassName: traefik
+  tls:
+    - hosts:
+        - lia-kube.cloudist.solutions
+      secretName: nginx-tls-secret
   rules:
     - host: lia-kube.cloudist.solutions
       http:
