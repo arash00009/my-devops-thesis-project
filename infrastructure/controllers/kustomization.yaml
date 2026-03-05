@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
   - cert-manager.yaml
   - traefik.yaml
-  -local-path-provisioner.yaml
+  - local-path-provisioner.yaml
