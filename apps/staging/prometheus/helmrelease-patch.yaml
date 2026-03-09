@@ -20,3 +20,18 @@ spec:
       extraVolumeMounts:
         - name: web-config
           mountPath: /etc/web-config
+    configmapReload:
+      prometheus:
+        extraEnv:
+          - name: PROMETHEUS_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: prometheus-exporter-auth
+                key: username
+          - name: PROMETHEUS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: prometheus-exporter-auth
+                key: password
+        extraArgs:
+          reload-url: "http://$(PROMETHEUS_USERNAME):$(PROMETHEUS_PASSWORD)@127.0.0.1:9090/-/reload"
