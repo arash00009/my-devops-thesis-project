@@ -20,14 +20,14 @@ spec:
       extraVolumeMounts:
         - name: web-config
           mountPath: /etc/web-config
-      livenessProbeSpec:
+      livenessProbe:
         tcpSocket:
           port: 9090
         initialDelaySeconds: 30
         periodSeconds: 15
         timeoutSeconds: 10
         failureThreshold: 3
-      readinessProbeSpec:
+      readinessProbe:
         tcpSocket:
           port: 9090
         initialDelaySeconds: 30
