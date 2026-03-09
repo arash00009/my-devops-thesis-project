@@ -11,3 +11,12 @@ spec:
         size: 8Gi
       statefulSet:
         enabled: true
+      extraArgs:
+        web.config.file: /etc/web-config/web-config.yml
+      extraVolumes:
+        - name: web-config
+          secret:
+            secretName: prometheus-basic-auth
+      extraVolumeMounts:
+        - name: web-config
+          mountPath: /etc/web-config
