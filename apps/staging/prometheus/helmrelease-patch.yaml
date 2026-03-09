@@ -20,20 +20,7 @@ spec:
       extraVolumeMounts:
         - name: web-config
           mountPath: /etc/web-config
-      livenessProbe:
-        tcpSocket:
-          port: 9090
-        initialDelaySeconds: 30
-        periodSeconds: 15
-        timeoutSeconds: 10
-        failureThreshold: 3
-      readinessProbe:
-        tcpSocket:
-          port: 9090
-        initialDelaySeconds: 30
-        periodSeconds: 5
-        timeoutSeconds: 4
-        failureThreshold: 3
+      tcpSocketProbeEnabled: true
     configmapReload:
       reloadUrl: "http://$(PROMETHEUS_USERNAME):$(PROMETHEUS_PASSWORD)@127.0.0.1:9090/-/reload"
       env:
