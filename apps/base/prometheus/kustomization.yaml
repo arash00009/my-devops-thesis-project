@@ -6,4 +6,4 @@ resources:
 - release.yaml
 - certificate.yaml
 - ingress.yaml
-- middleware.yam
+- middleware.yaml
