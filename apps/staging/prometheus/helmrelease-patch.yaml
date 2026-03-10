@@ -13,6 +13,8 @@ spec:
         enabled: true
       extraArgs:
         web.config.file: /etc/web-config/web-config.yml
+        web.external-url: https://lia-kube.cloudist.solutions/prometheus
+        web.route-prefix: /
       extraVolumes:
         - name: web-config
           secret:
