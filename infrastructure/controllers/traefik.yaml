@@ -50,3 +50,8 @@ spec:
         port: 443
         expose:
           default: true
+      windows-exporter:
+        port: 9182
+        expose:
+          default: true
+        protocol: TCP

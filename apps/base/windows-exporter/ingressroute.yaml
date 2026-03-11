@@ -1,0 +1,14 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: windows-exporter
+  namespace: windows-exporter
+spec:
+  entryPoints:
+    - windows-exporter
+  routes:
+    - match: "HostRegexp(`.+`)"
+      kind: Rule
+      services:
+        - name: windows-exporter
+          port: 9182
