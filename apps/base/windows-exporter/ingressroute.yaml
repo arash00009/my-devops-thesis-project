@@ -5,7 +5,7 @@ metadata:
   namespace: windows-exporter
 spec:
   entryPoints:
-    - windows-exporter
+    - win-exporter
   routes:
     - match: "HostRegexp(`.+`)"
       kind: Rule

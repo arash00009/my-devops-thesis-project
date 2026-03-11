@@ -1,3 +1,4 @@
+cat > ~/repositories/devops-fluxcd/infrastructure/controllers/traefik.yaml << 'EOF'
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -50,8 +51,9 @@ spec:
         port: 443
         expose:
           default: true
-      windows-exporter:
+      win-exporter:
         port: 9182
         expose:
           default: true
         protocol: TCP
+EOF
