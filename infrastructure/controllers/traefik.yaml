@@ -1,4 +1,3 @@
-cat > ~/repositories/devops-fluxcd/infrastructure/controllers/traefik.yaml << 'EOF'
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -56,4 +55,3 @@ spec:
         expose:
           default: true
         protocol: TCP
-EOF
