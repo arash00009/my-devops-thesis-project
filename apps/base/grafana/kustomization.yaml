@@ -4,3 +4,6 @@ resources:
 - namespace.yaml
 - repository.yaml
 - release.yaml
+- certificate.yaml
+- middleware.yaml
+- ingress.yaml
