@@ -24,6 +24,10 @@ spec:
         - name: web-config
           mountPath: /etc/web-config
       tcpSocketProbeEnabled: true
+    alertmanager:
+      extraArgs:
+        web.external-url: https://lia-kube.cloudist.solutions/alertmanager
+        web.route-prefix: /
     configmapReload:
       reloadUrl: "http://$(PROMETHEUS_USERNAME):$(PROMETHEUS_PASSWORD)@127.0.0.1:9090/-/reload"
       env:
