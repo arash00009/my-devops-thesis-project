@@ -1,4 +1,14 @@
 apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: alertmanager-strip-prefix
+  namespace: prometheus
+spec:
+  stripPrefix:
+    prefixes:
+      - /alertmanager
+---
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: alertmanager
@@ -9,6 +19,9 @@ spec:
   routes:
     - match: "Host(`lia-kube.cloudist.solutions`) && PathPrefix(`/alertmanager`)"
       kind: Rule
+      middlewares:
+        - name: alertmanager-strip-prefix
+          namespace: prometheus
       services:
         - name: prometheus-alertmanager
           port: 9093
