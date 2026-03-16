@@ -13,3 +13,8 @@ spec:
       server:
         root_url: https://lia-kube.cloudist.solutions/grafana
         serve_from_sub_path: true
+    sidecar:
+      dashboards:
+        enabled: true
+        label: grafana_dashboard
+        labelValue: "1"

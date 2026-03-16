@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dashboard-windows
+  namespace: grafana
+  labels:
+    grafana_dashboard: "1"
+data:
+  windows-dashboard.json: |
+    {
+      "title": "Windows Exporter",
+      "uid": "windows-exporter",
+      "panels": [
+        {
+          "id": 1,
+          "title": "CPU Usage %",
+          "type": "gauge",
+          "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4},
+          "targets": [
+            {
+              "expr": "100 - (avg(rate(windows_cpu_time_total{mode='idle'}[5m])) * 100)",
+              "legendFormat": "CPU %"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "min": 0,
+              "max": 100,
+              "thresholds": {
+                "steps": [
+                  {"color": "green", "value": 0},
+                  {"color": "yellow", "value": 70},
+                  {"color": "red", "value": 90}
+                ]
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "title": "Memory Usage %",
+          "type": "gauge",
+          "gridPos": {"x": 6, "y": 0, "w": 6, "h": 4},
+          "targets": [
+            {
+              "expr": "100 - ((windows_os_physical_memory_free_bytes / windows_cs_physical_memory_bytes) * 100)",
+              "legendFormat": "Memory %"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "min": 0,
+              "max": 100,
+              "thresholds": {
+                "steps": [
+                  {"color": "green", "value": 0},
+                  {"color": "yellow", "value": 70},
+                  {"color": "red", "value": 90}
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "schemaVersion": 36,
+      "version": 1
+    }

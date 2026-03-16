@@ -4,6 +4,7 @@ resources:
   - ../../base/grafana
   - ingress.yaml
   - certificate.yaml
+  - dashboard-windows.yaml
 patches:
   - path: helmrelease-patch.yaml
     target:
