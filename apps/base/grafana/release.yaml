@@ -14,13 +14,5 @@ spec:
         name: grafana
         namespace: flux-system
   values:
-    admin:
-      existingSecret: grafana-admin
-      userKey: admin-user
-      passwordKey: admin-password
     service:
       type: ClusterIP
-    grafana.ini:
-      server:
-        root_url: https://lia-kube.cloudist.solutions/grafana
-        serve_from_sub_path: true
