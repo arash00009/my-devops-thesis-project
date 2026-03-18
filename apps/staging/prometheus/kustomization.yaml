@@ -2,6 +2,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../../base/prometheus
+  - ingress.yaml
+  - certificate.yaml
+  - alertmanager-ingress.yaml
 patches:
   - path: helmrelease-patch.yaml
     target:
