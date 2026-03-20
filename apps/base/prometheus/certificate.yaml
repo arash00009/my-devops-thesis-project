@@ -1,12 +1,12 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: grafana-tls
-  namespace: grafana
+  name: prometheus-tls
+  namespace: prometheus
 spec:
-  secretName: grafana-tls-secret
+  secretName: prometheus-tls-secret
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer
   dnsNames:
-    - lia-kube.cloudist.solutions
+    - placeholder.example.com

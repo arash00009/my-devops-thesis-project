@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana
+  namespace: grafana
+spec:
+  tls:
+    - hosts:
+        - lia-kube.cloudist.solutions
+      secretName: grafana-tls-secret
+  rules:
+    - host: lia-kube.cloudist.solutions
+      http:
+        paths:
+          - path: /grafana
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 80
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: grafana-tls
+  namespace: grafana
+spec:
+  secretName: grafana-tls-secret
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - lia-kube.cloudist.solutions

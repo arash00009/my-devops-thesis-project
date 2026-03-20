@@ -1,25 +1,26 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: grafana
-  namespace: grafana
+  name: prometheus
+  namespace: prometheus
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: prometheus-prometheus-strip-prefix@kubernetescrd
 spec:
   ingressClassName: traefik
   tls:
     - hosts:
-        - lia-kube.cloudist.solutions
-      secretName: grafana-tls-secret
+        - placeholder.example.com
+      secretName: prometheus-tls-secret
   rules:
-    - host: lia-kube.cloudist.solutions
+    - host: placeholder.example.com
       http:
         paths:
-          - path: /grafana
+          - path: /prometheus
             pathType: Prefix
             backend:
               service:
-                name: grafana
+                name: prometheus-server
                 port:
                   number: 80

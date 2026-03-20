@@ -1,12 +1,12 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: prometheus-tls
-  namespace: prometheus
+  name: nginx-tls
+  namespace: nginx
 spec:
-  secretName: prometheus-tls-secret
+  secretName: nginx-tls-secret
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer
   dnsNames:
-    - lia-kube.cloudist.solutions
+    - placeholder.example.com

@@ -3,12 +3,7 @@ kind: Ingress
 metadata:
   name: nginx
   namespace: nginx
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls: "true"
-    traefik.ingress.kubernetes.io/router.middlewares: nginx-strip-prefix@kubernetescrd
 spec:
-  ingressClassName: traefik
   tls:
     - hosts:
         - lia-kube.cloudist.solutions
@@ -24,3 +19,16 @@ spec:
                 name: nginx
                 port:
                   number: 80
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: nginx-tls
+  namespace: nginx
+spec:
+  secretName: nginx-tls-secret
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - lia-kube.cloudist.solutions

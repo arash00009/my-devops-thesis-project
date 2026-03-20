@@ -1,12 +1,12 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: nginx-tls
-  namespace: nginx
+  name: grafana-tls
+  namespace: grafana
 spec:
-  secretName: nginx-tls-secret
+  secretName: grafana-tls-secret
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer
   dnsNames:
-    - lia-kube.cloudist.solutions
+    - placeholder.example.com

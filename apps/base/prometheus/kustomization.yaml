@@ -5,3 +5,5 @@ resources:
 - repository.yaml
 - release.yaml
 - middleware.yaml
+- ingress.yaml
+- certificate.yaml

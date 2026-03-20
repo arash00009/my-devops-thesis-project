@@ -2,11 +2,17 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../../base/grafana
-  - ingress.yaml
-  - certificate.yaml
   - dashboard-windows.yaml
 patches:
   - path: helmrelease-patch.yaml
     target:
       kind: HelmRelease
       name: grafana
+  - path: patch.yaml
+    target:
+      kind: Ingress
+      name: grafana
+  - path: patch.yaml
+    target:
+      kind: Certificate
+      name: grafana-tls
