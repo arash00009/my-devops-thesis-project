@@ -3,3 +3,5 @@ kind: Kustomization
 resources:
 - namespace.yaml
 - service.yaml
+- endpoints.yaml
+- ingressroute.yaml
