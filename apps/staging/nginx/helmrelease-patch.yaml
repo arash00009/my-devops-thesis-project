@@ -4,11 +4,5 @@ metadata:
   name: nginx
   namespace: nginx
 spec:
-  test:
-    enable: true
   values:
     replicaCount: 2
-    service:
-      port: 80
-    ingress:
-      enabled: false
