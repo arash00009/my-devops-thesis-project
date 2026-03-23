@@ -7,3 +7,4 @@ resources:
 - middleware.yaml
 - ingress.yaml
 - certificate.yaml
+- alertmanager-ingress.yaml
