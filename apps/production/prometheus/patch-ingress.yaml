@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prometheus
+  namespace: prometheus
+spec:
+  tls:
+    - hosts:
+        - production.cloudist.solutions
+      secretName: prometheus-tls-secret
+  rules:
+    - host: production.cloudist.solutions
+      http:
+        paths:
+          - path: /prometheus
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus-server
+                port:
+                  number: 80

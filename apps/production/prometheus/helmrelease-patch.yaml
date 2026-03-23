@@ -1,0 +1,16 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: prometheus
+  namespace: prometheus
+spec:
+  values:
+    server:
+      extraArgs:
+        web.external-url: https://production.cloudist.solutions/prometheus
+        web.route-prefix: /
+        web.enable-remote-write-receiver: ""
+    alertmanager:
+      extraArgs:
+        web.external-url: https://production.cloudist.solutions/alertmanager
+        web.route-prefix: /
