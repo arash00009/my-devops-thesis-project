@@ -11,4 +11,4 @@ spec:
       passwordKey: admin-password
     grafana.ini:
       server:
-        root_url: https://production.cloudist.solutions/grafana
+        root_url: https://lia-prod.cloudist.solutions/grafana

@@ -9,10 +9,10 @@ spec:
       enabled: false
     server:
       extraArgs:
-        web.external-url: https://production.cloudist.solutions/prometheus
+        web.external-url: https://lia-prod.cloudist.solutions/prometheus
         web.route-prefix: /
         web.enable-remote-write-receiver: ""
     alertmanager:
       extraArgs:
-        web.external-url: https://production.cloudist.solutions/alertmanager
+        web.external-url: https://lia-prod.cloudist.solutions/alertmanager
         web.route-prefix: /

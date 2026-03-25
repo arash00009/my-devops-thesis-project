@@ -6,10 +6,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - production.cloudist.solutions
+        - lia-prod.cloudist.solutions
       secretName: nginx-tls-secret
   rules:
-    - host: production.cloudist.solutions
+    - host: lia-prod.cloudist.solutions
       http:
         paths:
           - path: /nginx
