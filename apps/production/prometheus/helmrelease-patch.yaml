@@ -5,6 +5,8 @@ metadata:
   namespace: prometheus
 spec:
   values:
+    prometheus-node-exporter:
+      enabled: false
     server:
       extraArgs:
         web.external-url: https://production.cloudist.solutions/prometheus
