@@ -11,3 +11,4 @@ resources:
   - ingressroute.yaml
   - endpoints.yaml
   - service.yaml
+  - windows-exporter-namespace.yaml
