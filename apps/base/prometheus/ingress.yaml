@@ -4,6 +4,7 @@ metadata:
   name: prometheus
   namespace: prometheus
   annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: prometheus-prometheus-auth@kubernetescrd,prometheus-prometheus-strip-prefix@kubernetescrd
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
     traefik.ingress.kubernetes.io/router.middlewares: prometheus-prometheus-strip-prefix@kubernetescrd
