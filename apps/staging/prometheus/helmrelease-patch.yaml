@@ -6,38 +6,10 @@ metadata:
 spec:
   values:
     server:
-      persistentVolume:
-        enabled: true
-        size: 8Gi
-      statefulSet:
-        enabled: true
       extraArgs:
-        web.config.file: /etc/web-config/web-config.yml
         web.external-url: https://lia-kube.cloudist.solutions/prometheus
         web.route-prefix: /
         web.enable-remote-write-receiver: ""
-      extraVolumes:
-        - name: web-config
-          secret:
-            secretName: prometheus-basic-auth
-      extraVolumeMounts:
-        - name: web-config
-          mountPath: /etc/web-config
-      tcpSocketProbeEnabled: true
     alertmanager:
       extraArgs:
         web.external-url: https://lia-kube.cloudist.solutions/alertmanager
-        web.route-prefix: /
-    configmapReload:
-      reloadUrl: "http://$(PROMETHEUS_USERNAME):$(PROMETHEUS_PASSWORD)@127.0.0.1:9090/-/reload"
-      env:
-        - name: PROMETHEUS_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: prometheus-exporter-auth
-              key: username
-        - name: PROMETHEUS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: prometheus-exporter-auth
-              key: password
