@@ -4,9 +4,5 @@ metadata:
   name: grafana-tls
   namespace: grafana
 spec:
-  secretName: grafana-tls-secret
-  issuerRef:
-    name: letsencrypt
-    kind: ClusterIssuer
   dnsNames:
     - lia-kube.cloudist.solutions

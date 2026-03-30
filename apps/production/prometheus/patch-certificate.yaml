@@ -4,9 +4,5 @@ metadata:
   name: prometheus-tls
   namespace: prometheus
 spec:
-  secretName: prometheus-tls-secret
-  issuerRef:
-    name: letsencrypt
-    kind: ClusterIssuer
   dnsNames:
     - lia-prod.cloudist.solutions

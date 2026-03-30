@@ -4,9 +4,5 @@ metadata:
   name: nginx-tls
   namespace: nginx
 spec:
-  secretName: nginx-tls-secret
-  issuerRef:
-    name: letsencrypt
-    kind: ClusterIssuer
   dnsNames:
     - lia-kube.cloudist.solutions
