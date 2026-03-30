@@ -10,3 +10,12 @@ spec:
       secretName: prometheus-tls-secret
   rules:
     - host: lia-kube.cloudist.solutions
+      http:
+        paths:
+          - path: /prometheus
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus-server
+                port:
+                  number: 80
