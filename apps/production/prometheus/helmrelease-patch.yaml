@@ -8,25 +8,11 @@ spec:
     prometheus-node-exporter:
       enabled: false
     server:
-      persistentVolume:
-        enabled: true
-        size: 8Gi
-      statefulSet:
-        enabled: true
+      extraArgs:
+        web.external-url: https://lia-prod.cloudist.solutions/prometheus
+        web.route-prefix: /
+        web.enable-remote-write-receiver: ""
     alertmanager:
       extraArgs:
         web.external-url: https://lia-prod.cloudist.solutions/alertmanager
         web.route-prefix: /
-    configmapReload:
-      reloadUrl: "http://$(PROMETHEUS_USERNAME):$(PROMETHEUS_PASSWORD)@127.0.0.1:9090/-/reload"
-      env:
-        - name: PROMETHEUS_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: prometheus-exporter-auth
-              key: username
-        - name: PROMETHEUS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: prometheus-exporter-auth
-              key: password
