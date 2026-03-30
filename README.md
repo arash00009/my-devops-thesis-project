@@ -1,171 +1,165 @@
-# devops-fluxcd
+# 🚀 Production Deployment Guide — FluxCD with Kubernetes
 
-# Deployment Guide – From Scratch
+A step-by-step guide for bootstrapping FluxCD on a production Kubernetes cluster with Traefik ingress, Prometheus monitoring, and Grafana dashboards.
 
 ---
 
-## Part 1 – Create the Kubernetes Cluster (Virtuozzo)
+## 📋 Prerequisites
 
-### Step 1 – Set up the Network
+The following must be in place before you begin:
 
-Log in to Virtuozzo and create a network with the following settings:
+- [ ] A configured Kubernetes cluster
+- [ ] `kubectl` installed and configured
+- [ ] Flux CLI installed
+- [ ] `git` installed
+- [ ] GitHub account with access to the repository
+- [ ] Docker installed (required to generate bcrypt hash)
+- [ ] A domain with the ability to create DNS records
 
-| Setting | Value |
-|---------|-------|
-| Name | c-net2 |
-| IP Range (CIDR) | 10.1.2.0/24 |
-| Gateway | 10.1.2.1 |
+---
 
-### Step 2 – Create the Kubernetes Cluster
+## Part 1 — Preparation
 
-In Virtuozzo, create a new Kubernetes cluster with these settings:
-
-| Setting | Value |
-|---------|-------|
-| Cluster name | My-LIA-k8s |
-| Kubernetes version | v1.31.2 |
-| Network | c-net2: 10.1.2.0/24 |
-| High availability | Unchecked |
-| Master node flavor | gp-c2-m8 (2 vCPUs, 8 GiB RAM) |
-| Storage policy | All-Flash Premium |
-| Disk size | 20 GB |
-| Worker flavor | gp-c1-m8 (1 vCPU, 8 GiB RAM) |
-| Number of worker nodes | 1 |
-
-### Step 3 – Download and Configure kubectl Access
-
-After the cluster is created, click on it and download the kubeconfig file. Place it in your `.kube` folder:
-
-```
-C:\Users\YourName\.kube\
-```
-
-Set the KUBECONFIG environment variable in your terminal:
+### Step 1 — Install Flux CLI
 
 ```bash
-export KUBECONFIG="/c/Users/YourName/.kube/My-LIA-k8s-25_02_2026_13_39.kubeconfig"
-kubectl cluster-info
+curl -s https://fluxcd.io/install.sh | sudo bash
 ```
 
-Verify it works:
+### Step 2 — Create a GitHub Personal Access Token
+
+1. Go to **GitHub → Settings → Developer settings**
+2. Navigate to **Personal access tokens → Tokens (classic)**
+3. Click **Generate new token (classic)**
+4. Give it a descriptive name, e.g. `flux-production`
+5. Check the **full `repo` scope**
+6. Click **Generate token** and copy it immediately
+
+> ⚠️ You will not be able to see the token again after leaving the page.
+
+### Step 3 — Set environment variables
 
 ```bash
-kubectl get nodes
-kubectl config current-context
+export GITHUB_USER=<your-github-username>
+export GITHUB_REPO=<your-repository-name>
+export GITHUB_TOKEN=<your-personal-access-token>
 ```
 
-### Step 4 – Make the Configuration Permanent
-
-To avoid setting the environment variable every time you open a terminal, add it to your shell profile:
+### Step 4 — Verify your cluster context
 
 ```bash
-vi ~/.bashrc
-```
-
-Add this line and save:
-
-```bash
-export KUBECONFIG="/c/Users/YourName/.kube/My-LIA-k8s-25_02_2026_13_39.kubeconfig"
-```
-
-Then reload:
-
-```bash
-source ~/.bashrc
-echo $KUBECONFIG
+kubectl config get-contexts         # list all contexts
+kubectl config use-context <name>   # switch to the correct context
+kubectl config current-context      # confirm your selection
 ```
 
 ---
 
-## Part 2 – Install Tools
+## Part 2 — Bootstrap FluxCD
 
-### Step 5 – Install Flux CLI
-
-```bash
-winget install -e --id FluxCD.Flux -v 2.4.0
-```
-
-Verify:
+### Step 5 — Bootstrap Flux on the production cluster
 
 ```bash
-flux check --pre
-```
-
-### Step 6 – Install Helm
-
-```bash
-winget install -e --id Helm.Helm
-```
-
-Add the Bitnami repository:
-
-```bash
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo list
-```
-
----
-
-## Part 3 – Bootstrap GitOps with Flux
-
-### Step 7 – Bootstrap Flux on the Cluster
-
-Replace `YOUR_GITHUB_TOKEN` with a GitHub personal access token that has `repo` permissions.
-
-```bash
-export GITHUB_TOKEN=YOUR_GITHUB_TOKEN
-export GITHUB_USER=YOUR_GITHUB_USERNAME
-
 flux bootstrap github \
-  --components-extra=source-watcher \
-  --owner=cloudist-se \
-  --repository=devops-fluxcd \
+  --context=<context-name> \
+  --owner=${GITHUB_USER} \
+  --repository=${GITHUB_REPO} \
   --branch=main \
   --personal \
-  --path=clusters/staging \
+  --path=clusters/production \
   --token-auth
 ```
 
-Wait until Flux is ready:
+### Step 6 — Fetch the latest changes from GitHub
 
 ```bash
-flux check
-kubectl get pods -n flux-system
-flux get kustomizations -n flux-system
+git pull origin main
 ```
+
+### Step 7 — Verify that Flux is installed and syncing
+
+```bash
+flux get kustomizations
+```
+
+You should see `flux-system` with status `True`.
 
 ---
 
-## Part 4 – Clone the Repository
+## Part 3 — DNS Configuration
 
-### Step 8 – Clone the Repository
+### Step 8 — Get Traefik's external IP
 
 ```bash
-git clone https://github.com/cloudist-se/devops-fluxcd.git
-cd devops-fluxcd
+kubectl get svc -n traefik
 ```
+
+Note the value of `EXTERNAL-IP`.
+
+### Step 9 — Create a DNS A record
+
+In your DNS provider, create an A record:
+
+```
+<your-production-name>.cloudist.solutions  →  <EXTERNAL-IP>
+```
+
+### Step 10 — Verify DNS resolution
+
+```bash
+nslookup <your-production-name>.cloudist.solutions
+```
+
+> ⏳ Wait until it responds with the correct IP before proceeding.
 
 ---
 
-## Part 5 – Create Secrets Manually
+## Part 4 — Manually Create Secrets
 
-### Step 9 – Create Prometheus Basic Auth Secret
+> ⚠️ **Secrets are never committed to Git. They are created manually, directly in Kubernetes.**
 
-Replace `YOUR_PASSWORD` with your chosen password.
+### Step 11 — Wait until namespaces are created by Flux
 
 ```bash
-# Generate bcrypt hash
-docker run --rm httpd:2 htpasswd -nbBC 12 admin YOUR_PASSWORD
+kubectl get namespaces
 ```
 
-Copy the hash from the output (looks like `admin:$2y$12$...`), then run:
+Wait until `grafana` and `prometheus` appear with status `Active`.
+
+### Step 12 — Create Grafana admin secret
+
+```bash
+kubectl create secret generic grafana-admin \
+  --from-literal=admin-user=admin \
+  --from-literal=admin-password='your-password' \
+  -n grafana
+```
+
+### Step 13 — Generate bcrypt hash for Prometheus
+
+```bash
+docker run --rm httpd:2 htpasswd -nbBC 12 admin your-password
+```
+
+Save the output securely, for example in a password manager like Keeper.
+
+Example output:
+
+```
+admin:$2y$12$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+### Step 14 — Create Prometheus basic-auth secret
+
+Copy the full hash (the part **after** `admin:`) and run:
 
 ```bash
 kubectl create secret generic prometheus-basic-auth \
-  --from-literal=web-config.yml='basic_auth_users:
-  admin: PASTE_HASH_HERE' \
+  --from-literal=users='admin:$2y$12$YOUR_HASH_HERE' \
   -n prometheus
 ```
+
+Then create the Prometheus exporter-auth secret:
 
 ```bash
 kubectl create secret generic prometheus-exporter-auth \
@@ -174,169 +168,43 @@ kubectl create secret generic prometheus-exporter-auth \
   -n prometheus
 ```
 
-### Step 10 – Create Grafana Admin Secret
-
-Replace `YOUR_GRAFANA_PASSWORD` with your chosen password.
-
-```bash
-kubectl create secret generic grafana-admin \
-  --from-literal=admin-user=admin \
-  --from-literal=admin-password=YOUR_GRAFANA_PASSWORD \
-  -n grafana
-```
-
 ---
 
-## Part 6 – Verify the Deployment
+## Part 5 — Verification
 
-### Step 11 – Verify That Everything is Running
+### Step 15 — Verify that FluxCD is syncing
 
 ```bash
-# Check that all Flux kustomizations are ready
-kubectl get kustomization -n flux-system
+flux get kustomizations
+```
 
-# Check pods in each namespace
+All entries should show `Ready: True`.
+
+### Step 16 — Verify that pods are running
+
+```bash
 kubectl get pods -n prometheus
 kubectl get pods -n grafana
-kubectl get pods -n nginx
 ```
 
-All kustomizations should show `READY: True`.
+All pods should show status `Running`.
 
-### Step 12 – Verify That All Services Are Accessible
+### Step 17 — Test authentication
 
 ```bash
-curl -s -o /dev/null -w "Prometheus: %{http_code}\n" https://lia-kube.cloudist.solutions/prometheus -u admin:YOUR_PASSWORD
-curl -s -o /dev/null -w "Alertmanager: %{http_code}\n" https://lia-kube.cloudist.solutions/alertmanager
-curl -s -o /dev/null -w "Grafana: %{http_code}\n" https://lia-kube.cloudist.solutions/grafana
-curl -s -o /dev/null -w "Nginx: %{http_code}\n" https://lia-kube.cloudist.solutions/nginx
-```
+# Should return 401 (unauthorized)
+curl -s -o /dev/null -w "%{http_code}" https://YOUR_DOMAIN/prometheus
 
-Expected responses: `200` or `302` for all services.
+# Should return 302 (redirect — authenticated)
+curl -s -o /dev/null -w "%{http_code}" -u admin:YOUR_PASSWORD https://YOUR_DOMAIN/prometheus
+```
 
 ---
 
-## Part 7 – Windows Exporter and Grafana Alloy
+## ⚠️ Important Reminders
 
-### Step 13 – Install Windows Exporter (on Windows Machine)
-
-Open PowerShell as Administrator:
-
-```powershell
-# Download and install
-Invoke-WebRequest -Uri "https://github.com/prometheus-community/windows_exporter/releases/download/v0.29.2/windows_exporter-0.29.2-amd64.msi" -OutFile "$env:USERPROFILE\Downloads\windows_exporter.msi"
-Start-Process msiexec.exe -Wait -ArgumentList "/I $env:USERPROFILE\Downloads\windows_exporter.msi /quiet"
-
-# Verify it is running
-Get-Service windows_exporter
-```
-
-Verify in Git Bash:
-
-```bash
-curl http://localhost:9182/metrics | head -5
-```
-
-### Step 14 – Install and Configure Grafana Alloy (on Windows Machine)
-
-Open PowerShell as Administrator:
-
-```powershell
-winget install GrafanaLabs.Alloy
-```
-
-Create the configuration file. Replace `YOUR_PROMETHEUS_PASSWORD`:
-
-```powershell
-$config = @'
-logging {
-  level = "info"
-}
-
-prometheus.scrape "windows" {
-  targets = [{
-    __address__ = "localhost:9182",
-  }]
-  forward_to = [prometheus.remote_write.prometheus_k8s.receiver]
-  scrape_interval = "15s"
-}
-
-prometheus.remote_write "prometheus_k8s" {
-  endpoint {
-    url = "https://lia-kube.cloudist.solutions/prometheus/api/v1/write"
-    basic_auth {
-      username = "admin"
-      password = "YOUR_PROMETHEUS_PASSWORD"
-    }
-  }
-}
-'@
-
-[System.IO.File]::WriteAllText("$env:USERPROFILE\alloy-config.alloy", $config, [System.Text.Encoding]::ASCII)
-```
-
-Create a data directory and start Alloy:
-
-```powershell
-New-Item -ItemType Directory -Path "$env:USERPROFILE\alloy-data" -Force
-cd "$env:USERPROFILE"
-& "C:\Program Files\GrafanaLabs\Alloy\alloy-windows-amd64.exe" run "$env:USERPROFILE\alloy-config.alloy" --storage.path="$env:USERPROFILE\alloy-data" --server.http.listen-addr=127.0.0.1:12346
-```
-
-Keep the PowerShell window open – Alloy must be running to send metrics.
-
-### Step 15 – Create a Desktop Shortcut to Start Alloy Automatically
-
-```powershell
-$shortcut = (New-Object -ComObject WScript.Shell).CreateShortcut("$env:USERPROFILE\Desktop\Start Alloy.lnk")
-$shortcut.TargetPath = "powershell.exe"
-$shortcut.Arguments = "-NoExit -Command `"cd '$env:USERPROFILE'; & 'C:\Program Files\GrafanaLabs\Alloy\alloy-windows-amd64.exe' run '$env:USERPROFILE\alloy-config.alloy' --storage.path='$env:USERPROFILE\alloy-data' --server.http.listen-addr=127.0.0.1:12346`""
-$shortcut.WorkingDirectory = "$env:USERPROFILE"
-$shortcut.Save()
-```
-
-Double-click "Start Alloy" on the desktop each time you want to start sending metrics.
-
----
-
-## Part 8 – Verify Metrics and Dashboards
-
-### Step 16 – Verify Metrics in Prometheus
-
-Open the browser and go to:
-
-```
-https://lia-kube.cloudist.solutions/prometheus
-```
-
-Log in with `admin` and your password. Search for:
-
-```
-windows_cpu_time_total
-```
-
-You should see data from your Windows machine.
-
-### Step 17 – Verify Grafana Dashboard
-
-Open the browser and go to:
-
-```
-https://lia-kube.cloudist.solutions/grafana
-```
-
-Go to **☰ → Dashboards** and click on **Windows Exporter**. You should see CPU and Memory gauges with live data.
-
----
-
-## Troubleshooting
-
-| Problem | Solution |
-|---------|----------|
-| Kustomization not ready | `flux reconcile kustomization apps -n flux-system --with-source` |
-| Pod in CrashLoopBackOff | `kubectl logs <pod-name> -n <namespace>` |
-| 404 on a service | `kubectl rollout restart deployment traefik -n traefik` |
-| HelmRelease failed | `flux suspend helmrelease <n> -n <namespace> && flux resume helmrelease <n> -n <namespace>` |
-| Secret missing after namespace deletion | Re-run Step 9 and Step 10 |
-| Alloy sending 401 Unauthorized | Check that the correct password is in the alloy-config.alloy file |
-| kubectl not connecting | Verify KUBECONFIG is set: `echo $KUBECONFIG` |
+| # | Reminder |
+|---|----------|
+| 1 | **Secrets are never stored in Git** — always create them manually in the cluster |
+| 2 | If rebuilding the environment from scratch, always run Step 12–14 **before** FluxCD syncs the apps |
+| 3 | `prometheus-basic-auth` must use the key `users` (not `username`/`password`) for Traefik to work correctly |
