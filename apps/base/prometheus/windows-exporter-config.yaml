@@ -1,0 +1,40 @@
+# Windows Exporter ingress configuration for Prometheus scraping
+# This is NOT a standalone service - it creates a proxy route so
+# Prometheus can scrape metrics from Windows nodes via Traefik
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: windows-exporter
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: windows-exporter
+  namespace: prometheus
+subsets: []
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: windows-exporter
+  namespace: prometheus
+spec:
+  ports:
+    - port: 9182
+      targetPort: 9182
+      protocol: TCP
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: windows-exporter
+  namespace: prometheus
+spec:
+  entryPoints:
+    - win-exporter
+  routes:
+    - match: "HostRegexp(`.+`)"
+      kind: Rule
+      services:
+        - name: windows-exporter
+          port: 9182

@@ -8,7 +8,4 @@ resources:
   - ingress.yaml
   - certificate.yaml
   - alertmanager-ingress.yaml
-  - ingressroute.yaml
-  - endpoints.yaml
-  - service.yaml
-  - windows-exporter-namespace.yaml
+  - windows-exporter-config.yaml
