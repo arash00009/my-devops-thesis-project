@@ -5,10 +5,6 @@ metadata:
   namespace: grafana
 spec:
   values:
-    admin:
-      existingSecret: grafana-admin
-      userKey: admin-user
-      passwordKey: admin-password
     grafana.ini:
       server:
         root_url: https://lia-kube.cloudist.solutions/grafana
