@@ -4,7 +4,4 @@ metadata:
   name: tempo
   namespace: tempo
 spec:
-  values:
-    tempo:
-      extraArgs:
-        - "--config.expand-env=true"
+  values: {}
