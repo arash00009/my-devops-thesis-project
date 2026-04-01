@@ -1,0 +1,10 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: tempo
+  namespace: tempo
+spec:
+  values:
+    tempo:
+      extraArgs:
+        - "--config.expand-env=true"

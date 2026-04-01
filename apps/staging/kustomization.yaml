@@ -4,3 +4,4 @@ resources:
   - nginx/
   - prometheus/
   - grafana/
+  - tempo/

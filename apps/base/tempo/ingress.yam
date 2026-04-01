@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tempo
+  namespace: tempo
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: tempo-tempo-strip-prefix@kubernetescrd
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - placeholder.example.com
+      secretName: tempo-tls-secret
+  rules:
+    - host: placeholder.example.com
+      http:
+        paths:
+          - path: /tempo
+            pathType: Prefix
+            backend:
+              service:
+                name: tempo
+                port:
+                  number: 3100
