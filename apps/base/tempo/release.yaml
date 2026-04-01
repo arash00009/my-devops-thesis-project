@@ -18,10 +18,10 @@ spec:
       storage:
         trace:
           backend: local
-      receivers:
-        otlp:
-          protocols:
-            grpc:
-              endpoint: 0.0.0.0:4317
-            http:
-              endpoint: 0.0.0.0:4318
+          local:
+            path: /var/tempo/traces
+          wal:
+            path: /var/tempo/wal
+    persistence:
+      enabled: true
+      size: 10Gi
