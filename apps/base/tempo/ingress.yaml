@@ -23,4 +23,4 @@ spec:
               service:
                 name: tempo
                 port:
-                  number: 3100
+                  number: 3200
