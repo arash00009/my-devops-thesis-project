@@ -1,0 +1,9 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: loki-strip-prefix
+  namespace: loki
+spec:
+  stripPrefix:
+    prefixes:
+      - /loki

@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: loki
+  namespace: loki
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: loki-loki-strip-prefix@kubernetescrd
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - placeholder.example.com
+      secretName: loki-tls-secret
+  rules:
+    - host: placeholder.example.com
+      http:
+        paths:
+          - path: /loki
+            pathType: Prefix
+            backend:
+              service:
+                name: loki
+                port:
+                  number: 3100

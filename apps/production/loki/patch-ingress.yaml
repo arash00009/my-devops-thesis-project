@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: loki
+  namespace: loki
+spec:
+  tls:
+    - hosts:
+        - lia-prod.cloudist.solutions
+      secretName: loki-tls-secret
+  rules:
+    - host: lia-prod.cloudist.solutions
+      http:
+        paths:
+          - path: /loki
+            pathType: Prefix
+            backend:
+              service:
+                name: loki
+                port:
+                  number: 3100

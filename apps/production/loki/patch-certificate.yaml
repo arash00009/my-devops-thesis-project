@@ -1,0 +1,8 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: loki-tls
+  namespace: loki
+spec:
+  dnsNames:
+    - lia-prod.cloudist.solutions
