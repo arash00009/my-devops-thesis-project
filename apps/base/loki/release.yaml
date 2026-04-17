@@ -14,6 +14,7 @@ spec:
         name: grafana
         namespace: flux-system
   values:
+    deploymentMode: SingleBinary
     loki:
       auth_enabled: false
       commonConfig:
@@ -37,3 +38,11 @@ spec:
       replicas: 0
     backend:
       replicas: 0
+    gateway:
+      enabled: false
+    lokiCanary:
+      enabled: false
+    chunksCache:
+      enabled: false
+    resultsCache:
+      enabled: false
