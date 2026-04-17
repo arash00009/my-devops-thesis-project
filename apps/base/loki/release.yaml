@@ -1,51 +1,39 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: fluent-bit
-  namespace: fluent-bit
+  name: loki
+  namespace: loki
 spec:
   interval: 1h
   chart:
     spec:
-      chart: fluent-bit
-      version: "0.x"
+      chart: loki
+      version: "6.x"
       sourceRef:
         kind: HelmRepository
-        name: fluent
+        name: grafana
         namespace: flux-system
   values:
-    config:
-      inputs: |
-        [INPUT]
-            Name              tail
-            Tag               kube.*
-            Path              /var/log/containers/nginx*.log
-            Parser            docker
-            DB                /var/log/flb_kube.db
-            Mem_Buf_Limit     5MB
-            Skip_Long_Lines   On
-            Refresh_Interval  10
-      filters: |
-        [FILTER]
-            Name                kubernetes
-            Match               kube.*
-            Kube_URL            https://kubernetes.default.svc:443
-            Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-            Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
-            Kube_Tag_Prefix     kube.var.log.containers.
-            Merge_Log           On
-            Keep_Log            Off
-            K8S-Logging.Parser  On
-            K8S-Logging.Exclude Off
-      outputs: |
-        [OUTPUT]
-            Name            loki
-            Match           kube.*
-            Host            loki-gateway.loki.svc.cluster.local
-            Port            80
-            Labels          job=fluentbit
-            Auto_kubernetes_labels on
-    tolerations:
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
+    loki:
+      auth_enabled: false
+      commonConfig:
+        replication_factor: 1
+      storage:
+        type: filesystem
+      schemaConfig:
+        configs:
+          - from: "2024-01-01"
+            store: tsdb
+            object_store: filesystem
+            schema: v13
+            index:
+              prefix: index_
+              period: 24h
+    singleBinary:
+      replicas: 1
+    read:
+      replicas: 0
+    write:
+      replicas: 0
+    backend:
+      replicas: 0
