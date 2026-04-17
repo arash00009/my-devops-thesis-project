@@ -41,8 +41,8 @@ spec:
         [OUTPUT]
             Name            loki
             Match           kube.*
-            Host            loki-gateway.loki.svc.cluster.local
-            Port            80
+            Host            loki.loki.svc.cluster.local
+            Port            3100
             Labels          job=fluentbit
             Auto_kubernetes_labels on
     tolerations:
