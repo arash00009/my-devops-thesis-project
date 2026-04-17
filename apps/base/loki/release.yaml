@@ -40,8 +40,6 @@ spec:
       replicas: 0
     gateway:
       enabled: false
-    lokiCanary:
-      enabled: false
     chunksCache:
       enabled: false
     resultsCache:
