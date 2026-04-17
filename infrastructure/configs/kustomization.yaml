@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - cluster-issuers.yaml
   - traefik-redirect.yaml
+  - helm-repository-fluent.yaml
