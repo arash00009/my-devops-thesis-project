@@ -30,11 +30,8 @@ spec:
             index:
               prefix: index_
               period: 24h
-      rulesConfig:
-        enabled: false
     singleBinary:
       replicas: 1
-      extraContainers: []
     read:
       replicas: 0
     write:
@@ -48,5 +45,8 @@ spec:
     resultsCache:
       enabled: false
     sidecar:
+      image:
+        tag: "1.28.0"
       rules:
         enabled: false
+        searchNamespace: null
