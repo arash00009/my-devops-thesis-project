@@ -15,3 +15,7 @@ spec:
       port: 80
     metrics:
       enabled: true
+      podAnnotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9113"
+        prometheus.io/path: "/metrics"
