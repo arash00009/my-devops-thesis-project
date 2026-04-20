@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tempo-push
+  namespace: tempo
+spec:
+  tls:
+    - hosts:
+        - lia-kube.cloudist.solutions
+      secretName: tempo-tls-secret
+  rules:
+    - host: lia-kube.cloudist.solutions
+      http:
+        paths:
+          - path: /v1/traces
+            pathType: Prefix
+            backend:
+              service:
+                name: tempo
+                port:
+                  number: 4318

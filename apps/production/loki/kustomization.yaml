@@ -11,3 +11,7 @@ patches:
     target:
       kind: Certificate
       name: loki-tls
+  - path: patch-ingress-push.yaml
+    target:
+      kind: Ingress
+      name: loki-push

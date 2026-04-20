@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prometheus-pushgateway
+  namespace: prometheus
+spec:
+  tls:
+    - hosts:
+        - lia-kube.cloudist.solutions
+      secretName: prometheus-tls-secret
+  rules:
+    - host: lia-kube.cloudist.solutions
+      http:
+        paths:
+          - path: /push
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus-prometheus-pushgateway
+                port:
+                  number: 9091

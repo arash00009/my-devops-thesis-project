@@ -19,3 +19,7 @@ patches:
     target:
       kind: IngressRoute
       name: alertmanager
+  - path: patch-ingress-pushgateway.yaml
+    target:
+      kind: Ingress
+      name: prometheus-pushgateway

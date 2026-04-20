@@ -15,3 +15,7 @@ patches:
     target:
       kind: Certificate
       name: tempo-tls
+  - path: patch-ingress-push.yaml
+    target:
+      kind: Ingress
+      name: tempo-push
