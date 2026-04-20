@@ -7,4 +7,3 @@ resources:
   - ingress.yaml
   - certificate.yaml
   - middleware.yaml
-  - servicemonitor.yaml
