@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traces-dashboard
+  namespace: grafana
+  labels:
+    grafana_dashboard: "1"
+data:
+  traces.json: |
+    {
+      "title": "Traces — Tempo",
+      "uid": "tempo-traces",
+      "tags": ["tempo", "traces"],
+      "timezone": "browser",
+      "schemaVersion": 38,
+      "refresh": "30s",
+      "time": {"from": "now-1h", "to": "now"},
+      "templating": {
+        "list": [
+          {
+            "name": "namespace",
+            "type": "custom",
+            "label": "Namespace",
+            "options": [
+              {"text": "All", "value": ".*", "selected": true},
+              {"text": "nginx", "value": "nginx"},
+              {"text": "external", "value": "external"}
+            ],
+            "includeAll": true
+          },
+          {
+            "name": "service",
+            "type": "custom",
+            "label": "Service",
+            "options": [
+              {"text": "All", "value": ".*", "selected": true},
+              {"text": "nginx", "value": "nginx"},
+              {"text": "api", "value": "api"}
+            ],
+            "includeAll": true
+          }
+        ]
+      },
+      "panels": [
+        {
+          "id": 1,
+          "title": "Search Traces",
+          "type": "traces",
+          "gridPos": {"x": 0, "y": 0, "w": 24, "h": 16},
+          "datasource": {"type": "tempo", "uid": "tempo"},
+          "targets": [
+            {
+              "queryType": "nativeSearch",
+              "serviceName": "$service",
+              "refId": "A"
+            }
+          ]
+        }
+      ]
+    }

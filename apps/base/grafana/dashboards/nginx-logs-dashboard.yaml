@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-logs-dashboard
+  namespace: grafana
+  labels:
+    grafana_dashboard: "1"
+data:
+  nginx-logs.json: |
+    {
+      "title": "Nginx Logs",
+      "uid": "nginx-logs",
+      "tags": ["nginx", "loki", "logs"],
+      "timezone": "browser",
+      "schemaVersion": 38,
+      "refresh": "30s",
+      "time": {"from": "now-1h", "to": "now"},
+      "templating": {
+        "list": [
+          {
+            "name": "namespace",
+            "type": "query",
+            "datasource": {"type": "loki", "uid": "loki"},
+            "query": "label_values(namespace)",
+            "label": "Namespace",
+            "includeAll": true,
+            "multi": true,
+            "current": {"text": "All", "value": "$__all"}
+          },
+          {
+            "name": "pod",
+            "type": "query",
+            "datasource": {"type": "loki", "uid": "loki"},
+            "query": "label_values({namespace=~\"$namespace\"}, pod)",
+            "label": "Pod",
+            "includeAll": true,
+            "multi": true
+          }
+        ]
+      },
+      "panels": [
+        {
+          "id": 1,
+          "title": "Nginx Access Logs",
+          "type": "logs",
+          "gridPos": {"x": 0, "y": 0, "w": 24, "h": 12},
+          "datasource": {"type": "loki", "uid": "loki"},
+          "targets": [{"expr": "{namespace=~\"$namespace\", pod=~\"$pod\", app_kubernetes_io_name=\"nginx\"}", "legendFormat": ""}],
+          "options": {"showTime": true, "sortOrder": "Descending"}
+        },
+        {
+          "id": 2,
+          "title": "Log Volume",
+          "type": "timeseries",
+          "gridPos": {"x": 0, "y": 12, "w": 24, "h": 8},
+          "datasource": {"type": "loki", "uid": "loki"},
+          "targets": [{"expr": "sum by (pod) (count_over_time({namespace=~\"$namespace\", pod=~\"$pod\", app_kubernetes_io_name=\"nginx\"}[1m]))", "legendFormat": "{{pod}}"}]
+        }
+      ]
+    }

@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-metrics-dashboard
+  namespace: grafana
+  labels:
+    grafana_dashboard: "1"
+data:
+  nginx-metrics.json: |
+    {
+      "title": "Nginx Metrics",
+      "uid": "nginx-metrics",
+      "tags": ["nginx", "prometheus"],
+      "timezone": "browser",
+      "schemaVersion": 38,
+      "refresh": "30s",
+      "time": {"from": "now-1h", "to": "now"},
+      "templating": {
+        "list": [
+          {
+            "name": "namespace",
+            "type": "query",
+            "datasource": {"type": "prometheus", "uid": "prometheus"},
+            "query": "label_values(nginx_up, namespace)",
+            "label": "Namespace",
+            "includeAll": true,
+            "multi": true
+          },
+          {
+            "name": "pod",
+            "type": "query",
+            "datasource": {"type": "prometheus", "uid": "prometheus"},
+            "query": "label_values(nginx_up{namespace=~\"$namespace\"}, pod)",
+            "label": "Pod",
+            "includeAll": true,
+            "multi": true
+          }
+        ]
+      },
+      "panels": [
+        {
+          "id": 1,
+          "title": "Nginx Up",
+          "type": "stat",
+          "gridPos": {"x": 0, "y": 0, "w": 4, "h": 4},
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "targets": [{"expr": "nginx_up{namespace=~\"$namespace\", pod=~\"$pod\"}", "legendFormat": "{{pod}}"}]
+        },
+        {
+          "id": 2,
+          "title": "Active Connections",
+          "type": "timeseries",
+          "gridPos": {"x": 4, "y": 0, "w": 10, "h": 8},
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "targets": [{"expr": "nginx_connections_active{namespace=~\"$namespace\", pod=~\"$pod\"}", "legendFormat": "{{pod}}"}]
+        },
+        {
+          "id": 3,
+          "title": "Requests per Second",
+          "type": "timeseries",
+          "gridPos": {"x": 14, "y": 0, "w": 10, "h": 8},
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "targets": [{"expr": "rate(nginx_http_requests_total{namespace=~\"$namespace\", pod=~\"$pod\"}[5m])", "legendFormat": "{{pod}}"}]
+        },
+        {
+          "id": 4,
+          "title": "Connections Accepted vs Handled",
+          "type": "timeseries",
+          "gridPos": {"x": 0, "y": 8, "w": 12, "h": 8},
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "targets": [
+            {"expr": "rate(nginx_connections_accepted{namespace=~\"$namespace\", pod=~\"$pod\"}[5m])", "legendFormat": "Accepted {{pod}}"},
+            {"expr": "rate(nginx_connections_handled{namespace=~\"$namespace\", pod=~\"$pod\"}[5m])", "legendFormat": "Handled {{pod}}"}
+          ]
+        },
+        {
+          "id": 5,
+          "title": "Waiting / Reading / Writing Connections",
+          "type": "timeseries",
+          "gridPos": {"x": 12, "y": 8, "w": 12, "h": 8},
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "targets": [
+            {"expr": "nginx_connections_waiting{namespace=~\"$namespace\", pod=~\"$pod\"}", "legendFormat": "Waiting {{pod}}"},
+            {"expr": "nginx_connections_reading{namespace=~\"$namespace\", pod=~\"$pod\"}", "legendFormat": "Reading {{pod}}"},
+            {"expr": "nginx_connections_writing{namespace=~\"$namespace\", pod=~\"$pod\"}", "legendFormat": "Writing {{pod}}"}
+          ]
+        }
+      ]
+    }
