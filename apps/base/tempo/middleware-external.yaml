@@ -1,0 +1,8 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: tempo-push-auth
+  namespace: tempo
+spec:
+  basicAuth:
+    secret: tempo-push-auth

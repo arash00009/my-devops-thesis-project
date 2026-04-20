@@ -4,5 +4,7 @@ resources:
   - namespace.yaml
   - release.yaml
   - middleware.yaml
+  - middleware-external.yaml
   - ingress.yaml
+  - ingress-push.yaml
   - certificate.yaml

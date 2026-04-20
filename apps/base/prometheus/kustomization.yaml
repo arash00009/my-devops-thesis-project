@@ -5,7 +5,9 @@ resources:
   - repository.yaml
   - release.yaml
   - middleware.yaml
+  - middleware-external.yaml
   - ingress.yaml
+  - ingress-pushgateway.yaml
   - certificate.yaml
   - alertmanager-ingress.yaml
   - windows-exporter-config.yaml
