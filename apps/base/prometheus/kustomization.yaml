@@ -6,6 +6,7 @@ resources:
   - release.yaml
   - middleware.yaml
   - middleware-external.yaml
+  - middleware-pushgateway-strip.yaml
   - ingress.yaml
   - ingress-pushgateway.yaml
   - certificate.yaml
