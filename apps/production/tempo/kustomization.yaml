@@ -3,6 +3,10 @@ kind: Kustomization
 resources:
   - ../../base/tempo
 patches:
+  - path: helmrelease-patch.yaml
+    target:
+      kind: HelmRelease
+      name: tempo
   - path: patch-ingress.yaml
     target:
       kind: Ingress

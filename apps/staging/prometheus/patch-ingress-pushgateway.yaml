@@ -10,3 +10,12 @@ spec:
       secretName: prometheus-tls-secret
   rules:
     - host: lia-kube.cloudist.solutions
+      http:
+        paths:
+          - path: /push
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus-prometheus-pushgateway
+                port:
+                  number: 9091

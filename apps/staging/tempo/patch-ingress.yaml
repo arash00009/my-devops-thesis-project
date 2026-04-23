@@ -10,3 +10,12 @@ spec:
       secretName: tempo-tls-secret
   rules:
     - host: lia-kube.cloudist.solutions
+      http:
+        paths:
+          - path: /tempo
+            pathType: Prefix
+            backend:
+              service:
+                name: tempo
+                port:
+                  number: 3200
