@@ -10,12 +10,3 @@ spec:
       secretName: nginx-tls-secret
   rules:
     - host: lia-kube.cloudist.solutions
-      http:
-        paths:
-          - path: /nginx
-            pathType: Prefix
-            backend:
-              service:
-                name: nginx
-                port:
-                  number: 80

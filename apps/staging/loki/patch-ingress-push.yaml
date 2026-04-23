@@ -10,12 +10,3 @@ spec:
       secretName: loki-tls-secret
   rules:
     - host: lia-kube.cloudist.solutions
-      http:
-        paths:
-          - path: /loki/api/v1/push
-            pathType: Prefix
-            backend:
-              service:
-                name: loki
-                port:
-                  number: 3100
