@@ -4,3 +4,4 @@ resources:
   - cluster-issuers.yaml
   - traefik-redirect.yaml
   - helm-repository-fluent.yaml
+  - helm-repository-bitnami.yaml
