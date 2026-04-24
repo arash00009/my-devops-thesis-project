@@ -32,6 +32,7 @@ spec:
               tls { insecure = true }
             }
           }
+    service:
       extraPorts:
         - name: otlp-grpc
           port: 4317
