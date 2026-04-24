@@ -5,27 +5,33 @@ metadata:
   namespace: alloy
 spec:
   interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: bitnami-alloy
-    namespace: flux-system
+  chart:
+    spec:
+      chart: alloy
+      version: "1.x"
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: flux-system
   values:
     alloy:
-      extraConfig: |
-        otelcol.receiver.otlp "default" {
-          grpc { endpoint = "0.0.0.0:4317" }
-          http { endpoint = "0.0.0.0:4318" }
-          output {
-            traces = [otelcol.exporter.otlp.tempo.input]
+      configMap:
+        create: true
+        content: |
+          otelcol.receiver.otlp "default" {
+            grpc { endpoint = "0.0.0.0:4317" }
+            http { endpoint = "0.0.0.0:4318" }
+            output {
+              traces = [otelcol.exporter.otlp.tempo.input]
+            }
           }
-        }
 
-        otelcol.exporter.otlp "tempo" {
-          client {
-            endpoint = "tempo.tempo.svc.cluster.local:4317"
-            tls { insecure = true }
+          otelcol.exporter.otlp "tempo" {
+            client {
+              endpoint = "tempo.tempo.svc.cluster.local:4317"
+              tls { insecure = true }
+            }
           }
-        }
     controller:
       type: daemonset
     tolerations:
