@@ -5,14 +5,10 @@ metadata:
   namespace: alloy
 spec:
   interval: 1h
-  chart:
-    spec:
-      chart: grafana-alloy
-      version: "1.x"
-      sourceRef:
-        kind: HelmRepository
-        name: bitnami
-        namespace: flux-system
+  chartRef:
+    kind: OCIRepository
+    name: bitnami-alloy
+    namespace: flux-system
   values:
     alloy:
       extraConfig: |
