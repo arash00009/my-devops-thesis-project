@@ -440,19 +440,6 @@ curl -u external:YOUR_EXT_PASSWORD \
 
 ---
 
-## Secrets Reference
-
-| Secret Name | Namespace | Purpose |
-|-------------|-----------|---------|
-| `grafana-admin` | `grafana` | Grafana UI login |
-| `prometheus-basic-auth` | `prometheus` | Prometheus UI auth (Traefik middleware) |
-| `prometheus-exporter-auth` | `prometheus` | Configmap-reload auth |
-| `prometheus-push-auth` | `prometheus` | External push BasicAuth |
-| `loki-push-auth` | `loki` | External push BasicAuth |
-| `tempo-push-auth` | `tempo` | External push BasicAuth |
-
----
-
 ## Known Issues
 
 | Issue | Solution |
